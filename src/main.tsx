@@ -10,7 +10,7 @@ import studioNightWall from './media/studio-night-wall.png'
 import voxelStudioRoom from './media/voxel-studio-room.png'
 import './styles.css'
 
-type IconName = 'arrow-down' | 'arrow-up' | 'arrow-right' | 'arrow-up-right' | 'close' | 'menu' | 'zoom'
+type IconName = 'arrow-down' | 'arrow-up' | 'arrow-right' | 'arrow-up-right' | 'close' | 'menu' | 'zoom' | 'behance'
 
 function Icon({ name, className = '' }: { name: IconName; className?: string }) {
   const paths: Record<IconName, ReactNode> = {
@@ -21,6 +21,7 @@ function Icon({ name, className = '' }: { name: IconName; className?: string }) 
     close: <><path d="m6 6 12 12M18 6 6 18" /></>,
     menu: <><path d="M4 7h16M4 12h16M4 17h16" /></>,
     zoom: <><circle cx="10.5" cy="10.5" r="5.5" /><path d="m15 15 4.5 4.5M10.5 8v5M8 10.5h5" /></>,
+    behance: <><path d="M5 6.5h6.2c2.1 0 3.5 1 3.5 2.8 0 1.25-.72 2.12-1.83 2.46 1.48.3 2.43 1.25 2.43 2.82 0 2.05-1.67 3.4-4.18 3.4H5z" /><path d="M7.6 9h3.15c.9 0 1.42.36 1.42 1.08 0 .74-.52 1.12-1.42 1.12H7.6zM7.6 13.45h3.75c1.05 0 1.63.43 1.63 1.28 0 .84-.58 1.27-1.63 1.27H7.6z" fill="currentColor" stroke="none" /><path d="M17.25 11.1c1.48 0 2.65 1.08 2.65 3.02 0 .2-.02.4-.05.57h-4.12c.14.88.7 1.36 1.56 1.36.63 0 1.07-.23 1.42-.7l1.1.83c-.58.86-1.42 1.35-2.63 1.35-1.73 0-2.93-1.18-2.93-3.15 0-1.9 1.2-3.28 3-3.28zM15.77 13.54h2.55c-.12-.75-.55-1.15-1.23-1.15-.7 0-1.15.4-1.32 1.15z" fill="currentColor" stroke="none" /></>,
   }
   return <svg className={`icon ${className}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[name]}</svg>
 }
@@ -61,7 +62,8 @@ function Hero() {
 }
 
 function RecruiterProfile() {
-  return <section className="recruiter-profile" id="profile" aria-labelledby="profile-title"><p className="eyebrow">быстрый профиль для HR</p><div><h2 id="profile-title">Дизайнер,<br /><em>который думает</em><br />системой.</h2><p>Работаю с айдентикой, печатными и редакционными форматами. Открыта к junior-позициям, стажировкам и проектной работе в агентствах.</p></div><dl><div><dt>Фокус</dt><dd>Identity · Editorial · Print</dd></div><div><dt>Инструменты</dt><dd>Photoshop · Illustrator · InDesign</dd></div><div><dt>Формат</dt><dd>Томск · удалённо</dd></div></dl><a href="/Резюме.pdf" download>Скачать резюме <Icon name="arrow-up-right" /></a></section>
+  const [open, setOpen] = useState(false)
+  return <section className={`recruiter-profile ${open ? 'recruiter-profile--open' : ''}`} id="profile" aria-labelledby="profile-title"><button className="recruiter-profile__handle" type="button" aria-expanded={open} aria-controls="hr-profile-panel" onClick={() => setOpen(value => !value)}><span>Вы HR?</span><b>{open ? 'Скрыть профиль' : 'Быстрый профиль'}</b><Icon name={open ? 'arrow-up' : 'arrow-down'} /></button><div className="recruiter-profile__drawer" id="hr-profile-panel"><div className="recruiter-profile__drawer-inner"><div className="recruiter-profile__content"><p className="eyebrow">быстрый профиль для HR</p><div><h2 id="profile-title">Дизайнер,<br /><em>который думает</em><br />системой.</h2><p>Работаю с айдентикой, печатными и редакционными форматами. Открыта к junior-позициям, стажировкам и проектной работе в агентствах.</p></div><dl><div><dt>Фокус</dt><dd>Identity · Editorial · Print</dd></div><div><dt>Инструменты</dt><dd>Photoshop · Illustrator · InDesign</dd></div><div><dt>Формат</dt><dd>Томск · удалённо</dd></div></dl><div className="recruiter-profile__links"><a href="/Резюме.pdf" download>Резюме <Icon name="arrow-up-right" /></a><a href="https://t.me/Vol_hsu" target="_blank" rel="noopener noreferrer">Telegram <Icon name="arrow-up-right" /></a><a href="mailto:d1ana.volf@yandex.ru">Почта <Icon name="arrow-up-right" /></a><a href="https://www.behance.net/68325c22" target="_blank" rel="noopener noreferrer">Behance <Icon name="behance" /></a></div></div></div></div></section>
 }
 
 function ProjectIndex({ openProject }: { openProject: (project: Project) => void }) {
@@ -241,7 +243,7 @@ function Contact() {
     cat?.style.setProperty('--pixel-cat-rotate', `${x * 5}deg`)
   }
   const resetCats = () => { const cat = contact.current?.querySelector<HTMLElement>('.contact__pixel-cat'); cat?.style.setProperty('--pixel-cat-x', '0px'); cat?.style.setProperty('--pixel-cat-y', '0px'); cat?.style.setProperty('--pixel-cat-rotate', '0deg') }
-  return <section ref={contact} className="contact" id="contact" aria-labelledby="contact-title" onPointerMove={moveCats} onPointerLeave={resetCats}><div className="contact__pixel-cat" aria-hidden="true"><img className="contact__pixel-cat-open" src={pixelCatContactOpen} alt="" loading="lazy" decoding="async" /><img className="contact__pixel-cat-closed" src={pixelCatContactClosed} alt="" loading="lazy" decoding="async" /></div><p className="eyebrow">Есть проект?</p><h2 id="contact-title">Давайте<br /><em>обсудим.</em></h2><p className="contact__sub">Вы можете написать мне в Telegram<br />или отправить письмо.</p><div className="contact__actions"><a className="magnetic" href="https://t.me/Vol_hsu" target="_blank" rel="noopener noreferrer">Написать мне <Icon name="arrow-up-right" /></a><a href="mailto:d1ana.volf@yandex.ru">d1ana.volf@yandex.ru</a></div><footer><span>DIANA VOLF<br />GRAPHIC DESIGNER</span><span>© 2026</span><a href="#top">Back to top <Icon name="arrow-up" /></a></footer></section> }
+  return <section ref={contact} className="contact" id="contact" aria-labelledby="contact-title" onPointerMove={moveCats} onPointerLeave={resetCats}><div className="contact__pixel-cat" aria-hidden="true"><img className="contact__pixel-cat-open" src={pixelCatContactOpen} alt="" loading="lazy" decoding="async" /><img className="contact__pixel-cat-closed" src={pixelCatContactClosed} alt="" loading="lazy" decoding="async" /></div><p className="eyebrow">Есть проект?</p><h2 id="contact-title">Давайте<br /><em>обсудим.</em></h2><p className="contact__sub">Вы можете написать мне в Telegram<br />или отправить письмо.</p><div className="contact__actions"><a className="magnetic" href="https://t.me/Vol_hsu" target="_blank" rel="noopener noreferrer">Написать мне <Icon name="arrow-up-right" /></a><a href="mailto:d1ana.volf@yandex.ru">d1ana.volf@yandex.ru</a></div><footer><span>DIANA VOLF<br />GRAPHIC DESIGNER</span><span>© 2026</span><a className="contact__behance" href="https://www.behance.net/68325c22" target="_blank" rel="noopener noreferrer">Behance <Icon name="behance" /></a><a href="#top">Back to top <Icon name="arrow-up" /></a></footer></section> }
 
 type ZoomedImage = { src: string; alt: string }
 function CaseDialog({ project, close, next }: { project: Project; close: () => void; next: () => void }) {
