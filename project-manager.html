@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Добавить кейс — Diana Volf</title>
+  <style>
+    :root { color: #1c2d5d; background: #eee8df; font-family: Comfortaa, Arial, sans-serif; }
+    * { box-sizing: border-box; } body { margin: 0; padding: 28px 16px 60px; }
+    main { width: min(100%, 760px); margin: auto; padding: clamp(24px, 5vw, 48px); border: 1px solid #45518c66; border-radius: 24px; background: #ede7dd; box-shadow: 0 20px 50px #1c2d5d18; }
+    h1 { margin: 0 0 12px; font: clamp(38px, 8vw, 70px)/.82 "Poiret One", serif; letter-spacing: -.07em; } .lead { max-width: 560px; font-size: 13px; line-height: 1.7; }
+    form { display: grid; gap: 17px; margin-top: 34px; } label { display: grid; gap: 7px; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+    input, textarea, select { width: 100%; padding: 12px; border: 1px solid #45518c66; border-radius: 10px; color: #1c2d5d; background: #fffdf9; font: 14px/1.45 inherit; letter-spacing: normal; text-transform: none; }
+    textarea { min-height: 94px; resize: vertical; } .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    button { justify-self: start; padding: 14px 20px; border: 0; border-radius: 99px; color: #ede7dd; background: #1c2d5d; font: 700 12px inherit; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; } button:disabled { opacity: .6; cursor: wait; }
+    #status { min-height: 24px; margin: 0; color: #45518c; font-size: 13px; line-height: 1.5; } .hint { margin: -9px 0 0; color: #59628c; font-size: 12px; line-height: 1.5; }
+    @media (max-width: 520px) { main { padding: 24px 18px; border-radius: 16px; } .grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Новый<br>кейс</h1>
+    <p class="lead">Файлы будут скопированы в сайт, а работа сразу появится в его данных. Укажи полные пути к картинкам: по одному изображению в строке.</p>
+    <form id="project-form">
+      <div class="grid"><label>Короткий ID<input name="id" required pattern="[a-z0-9-]+" placeholder="coffee-brand"></label><label>Год<input name="year" required value="2026" inputmode="numeric"></label></div>
+      <label>Название<input name="title" required placeholder="Название проекта"></label>
+      <label>Подзаголовок<input name="subtitle" required placeholder="Например: айдентика кофейни"></label>
+      <label>Описание<textarea name="description" required placeholder="2–3 предложения о задаче и результате"></textarea></label>
+      <div class="grid"><label>Статус<select name="status"><option>Учебный проект</option><option>Концептуальный проект</option><option>Коммерческий проект</option></select></label><label><span>Показывать в избранных</span><select name="featured"><option value="true">Да</option><option value="false">Нет, только в архиве</option></select></label></div>
+      <label>Задача<textarea name="brief" placeholder="Какую задачу решает проект"></textarea></label>
+      <label>Моя роль<textarea name="role" placeholder="Например: концепция, айдентика и вёрстка"></textarea></label>
+      <div class="grid"><label>Что сделано через запятую<input name="deliverables" placeholder="Логотип, гайдлайн, упаковка"></label><label>Инструменты через запятую<input name="tools" placeholder="Illustrator, InDesign"></label></div>
+      <label>Результат (необязательно)<textarea name="result" placeholder="Только подтверждённый результат проекта"></textarea></label>
+      <div class="grid"><label>Теги через запятую<input name="tags" required placeholder="Branding, Logo, Print"></label><label>Цвет кейса<select name="theme"><option value="ink">Ink</option><option value="wine">Wine</option><option value="green">Green</option><option value="pulse">Pulse</option></select></label></div>
+      <label>Путь к обложке<input name="cover" required placeholder="A:\\Работы\\Кофейня\\01-cover.jpg"></label>
+      <label>Пути к остальным изображениям<textarea name="images" placeholder="A:\\Работы\\Кофейня\\02.jpg&#10;A:\\Работы\\Кофейня\\03.jpg"></textarea></label>
+      <p class="hint">После сохранения запусти <code>python deploy.py --config deploy.config.json</code>, чтобы опубликовать работу.</p>
+      <button>Добавить в сайт</button><p id="status" role="status"></p>
+    </form>
+  </main>
+  <script>
+    const form = document.querySelector('#project-form'); const status = document.querySelector('#status');
+    form.addEventListener('submit', async (event) => { event.preventDefault(); const button = form.querySelector('button'); button.disabled = true; status.textContent = 'Добавляю файлы…'; const values = Object.fromEntries(new FormData(form)); values.images = values.images.split(/\r?\n/).map(x => x.trim()).filter(Boolean); ['tags', 'deliverables', 'tools'].forEach(key => values[key] = values[key].split(',').map(x => x.trim()).filter(Boolean)); values.featured = values.featured === 'true'; try { const response = await fetch('/api/projects', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(values) }); const result = await response.json(); if (!response.ok) throw new Error(result.error || 'Не удалось добавить кейс'); status.textContent = `Готово: добавлена работа №${result.number}. Теперь можно запускать deploy.py.`; form.reset(); } catch (error) { status.textContent = `Ошибка: ${error.message}`; } finally { button.disabled = false; } });
+  </script>
+</body>
+</html>

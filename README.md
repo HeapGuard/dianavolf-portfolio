@@ -15,7 +15,7 @@ npm run dev
 npm run build
 ```
 
-Папку `dist/` можно загрузить в Cloudflare Pages, Netlify или Vercel. Для Cloudflare Pages укажите команды `npm run build` и каталог `dist`. Файл `public/_headers` будет опубликован как `_headers` и задаст CSP, запрет встраивания сайта в iframe и отключение ненужных разрешений браузера.
+Папку `dist/` можно загрузить в Cloudflare Pages, Netlify или Vercel. Для Vercel укажите команду `npm run build` и каталог `dist`; Vercel создаст отдельный Preview для ветки без изменения рабочего домена. Файл `public/_headers` будет опубликован как `_headers` и задаст CSP, запрет встраивания сайта в iframe и отключение ненужных разрешений браузера.
 
 ## Как добавить или изменить работу
 

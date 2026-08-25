@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type PointerEvent, type ReactNode, type UIEvent } from 'react'
+import { Fragment, useEffect, useRef, useState, type PointerEvent, type ReactNode, type UIEvent } from 'react'
 import { assets, projects, type Project } from './data/projects'
 import pixelCatAbout from './media/pixel-cat-about.png'
 import pixelCatContactClosed from './media/pixel-cat-contact-closed.png'
@@ -10,7 +10,9 @@ import studioNightWall from './media/studio-night-wall.png'
 import voxelStudioRoom from './media/voxel-studio-room.png'
 import './styles.css'
 
-type IconName = 'arrow-down' | 'arrow-up' | 'arrow-right' | 'arrow-up-right' | 'close' | 'menu' | 'zoom'
+type IconName = 'arrow-down' | 'arrow-up' | 'arrow-right' | 'arrow-up-right' | 'close' | 'menu' | 'zoom' | 'behance'
+
+const telegramLink = (message: string) => `https://t.me/Vol_hsu?text=${encodeURIComponent(message)}`
 
 function Icon({ name, className = '' }: { name: IconName; className?: string }) {
   const paths: Record<IconName, ReactNode> = {
@@ -21,6 +23,7 @@ function Icon({ name, className = '' }: { name: IconName; className?: string }) 
     close: <><path d="m6 6 12 12M18 6 6 18" /></>,
     menu: <><path d="M4 7h16M4 12h16M4 17h16" /></>,
     zoom: <><circle cx="10.5" cy="10.5" r="5.5" /><path d="m15 15 4.5 4.5M10.5 8v5M8 10.5h5" /></>,
+    behance: <><path d="M5 6.5h6.2c2.1 0 3.5 1 3.5 2.8 0 1.25-.72 2.12-1.83 2.46 1.48.3 2.43 1.25 2.43 2.82 0 2.05-1.67 3.4-4.18 3.4H5z" /><path d="M7.6 9h3.15c.9 0 1.42.36 1.42 1.08 0 .74-.52 1.12-1.42 1.12H7.6zM7.6 13.45h3.75c1.05 0 1.63.43 1.63 1.28 0 .84-.58 1.27-1.63 1.27H7.6z" fill="currentColor" stroke="none" /><path d="M17.25 11.1c1.48 0 2.65 1.08 2.65 3.02 0 .2-.02.4-.05.57h-4.12c.14.88.7 1.36 1.56 1.36.63 0 1.07-.23 1.42-.7l1.1.83c-.58.86-1.42 1.35-2.63 1.35-1.73 0-2.93-1.18-2.93-3.15 0-1.9 1.2-3.28 3-3.28zM15.77 13.54h2.55c-.12-.75-.55-1.15-1.23-1.15-.7 0-1.15.4-1.32 1.15z" fill="currentColor" stroke="none" /></>,
   }
   return <svg className={`icon ${className}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[name]}</svg>
 }
@@ -40,7 +43,7 @@ function Header() {
   return <header className="header">
     <a className="brand" href="#top" aria-label="Диана Вольф, в начало">DV<span>01</span></a>
     <button className="menu-button" onClick={() => setMenuOpen(!menuOpen)} aria-expanded={menuOpen} aria-controls="site-menu"><Icon name={menuOpen ? 'close' : 'menu'} /><span>{menuOpen ? 'Закрыть' : 'Меню'}</span></button>
-    <nav id="site-menu" className={menuOpen ? 'nav nav--open' : 'nav'} aria-label="Основная навигация"><a onClick={close} href="#works">Работы</a><a onClick={close} href="#about">Обо мне</a><a onClick={close} href="#skills">Навыки</a><a onClick={close} href="#contact">Контакты</a></nav>
+    <nav id="site-menu" className={menuOpen ? 'nav nav--open' : 'nav'} aria-label="Основная навигация"><a onClick={close} href="#services">Услуги</a><a onClick={close} href="#works">Работы</a><a onClick={close} href="#process">Процесс</a><a onClick={close} href="#contact">Контакты</a></nav>
   </header>
 }
 
@@ -57,10 +60,35 @@ function Hero() {
     hero.current.style.setProperty('--mark-y', `${y * 11}px`)
   }
   const resetHero = () => { if (hero.current) { hero.current.style.setProperty('--paper-x', '0px'); hero.current.style.setProperty('--paper-y', '0px'); hero.current.style.setProperty('--mark-x', '0px'); hero.current.style.setProperty('--mark-y', '0px') } }
-  return <section id="top" className="hero" ref={hero} onPointerMove={moveHero} onPointerLeave={resetHero}><p className="eyebrow hero__eyebrow">Graphic Designer <span>Tomsk / 2026</span></p><div className="hero__title" aria-label="Диана Вольф"><span>ДИАНА</span><span>ВОЛЬФ</span></div><div className="hero__paper">визуальный дизайн<br />и печатная магия</div><div className="hero__pixel-cat" aria-hidden="true"><img className="hero__pixel-cat-open" src={pixelCatHeroOpen} alt="" loading="eager" decoding="async" /><img className="hero__pixel-cat-closed" src={pixelCatHeroClosed} alt="" loading="eager" decoding="async" /></div><div className="hero__mark" aria-hidden="true"><span>01</span></div><p className="hero__description">Визуальный дизайн, айдентика<br />и многостраничная продукция.</p><a className="scroll-hint" href="#works">scroll to explore <Icon name="arrow-down" /></a></section>
+  return <section id="top" className="hero" ref={hero} onPointerMove={moveHero} onPointerLeave={resetHero}><p className="eyebrow hero__eyebrow">Graphic Designer <span>Tomsk / remote</span></p><div className="hero__title" aria-label="Диана Вольф"><span>ДИАНА</span><span>ВОЛЬФ</span></div><div className="hero__paper">айдентика<br />editorial и print</div><div className="hero__pixel-cat" aria-hidden="true"><img className="hero__pixel-cat-open" src={pixelCatHeroOpen} alt="" loading="eager" decoding="async" /><img className="hero__pixel-cat-closed" src={pixelCatHeroClosed} alt="" loading="eager" decoding="async" /></div><div className="hero__mark" aria-hidden="true"><span>01</span></div><p className="hero__description">Помогаю малому бизнесу<br />выглядеть цельно и узнаваемо.</p><div className="hero__actions"><a className="hero__primary" href={telegramLink('Привет, Диана! Хочу обсудить дизайн-проект.\n\nМой бизнес / проект: \nЗадача: \nЖелаемый срок: ')} target="_blank" rel="noopener noreferrer">Обсудить проект <Icon name="arrow-up-right" /></a><a className="hero__cv" href="#works">Смотреть кейсы <Icon name="arrow-down" /></a></div></section>
+}
+
+const serviceOffers = [
+  { number: '01', title: 'Айдентика\nс нуля', text: 'Для нового бренда, которому нужны характер, логика и узнаваемый визуальный язык.', message: 'Привет, Диана! Хочу обсудить айдентику с нуля.\n\nМой бизнес / проект: \nЧто нужно создать: \nЖелаемый срок: ' },
+  { number: '02', title: 'Визуальная\nсистема', text: 'Для бренда, который уже работает и хочет собрать разрозненный дизайн в одну цельную систему.', message: 'Привет, Диана! Хочу обсудить визуальную систему для бренда.\n\nМой бизнес / проект: \nЧто хочется улучшить: \nЖелаемый срок: ' },
+  { number: '03', title: 'Дизайн\nдля запуска', text: 'Носители, печать, презентации и материалы, которые помогают новому проекту выйти в мир.', message: 'Привет, Диана! Хочу обсудить дизайн для запуска.\n\nМой бизнес / проект: \nКакие материалы нужны: \nЖелаемый срок: ' },
+]
+
+function Services() {
+  return <section className="services" id="services" aria-labelledby="services-title"><div className="services__top"><p className="eyebrow">01 / чем помогу</p><h2 id="services-title">Дизайн, который<br /><em>собирает бренд.</em></h2><p>Не просто «сделать красиво», а найти визуальную форму, в которой бизнес будет узнаваемым и уверенным.</p></div><div className="services__grid">{serviceOffers.map(offer => <article key={offer.number} className="service-card"><span>{offer.number}</span><h3>{offer.title.split('\n').map((line, index) => <Fragment key={line}>{index > 0 && <br />}{line}</Fragment>)}</h3><p>{offer.text}</p><a href={telegramLink(offer.message)} target="_blank" rel="noopener noreferrer">Обсудить задачу <Icon name="arrow-up-right" /></a></article>)}</div></section>
+}
+
+function Process() {
+  const steps = [['01', 'Знакомимся', 'Вы рассказываете о бизнесе, задаче и сроках. Я задаю нужные вопросы.'], ['02', 'Ищем направление', 'Собираем визуальный язык и выбираем решение, которое подходит именно вашему проекту.'], ['03', 'Дорабатываем', 'Уточняем детали и адаптируем дизайн под нужные носители.'], ['04', 'Передаю систему', 'Вы получаете готовые файлы и понятную основу для дальнейшей коммуникации.']]
+  return <section className="process" id="process" aria-labelledby="process-title"><div className="process__heading"><p className="eyebrow">03 / как работаем</p><h2 id="process-title">Без хаоса.<br /><em>По шагам.</em></h2><p>Срок и состав работы зависят от задачи — обсудим их после короткого знакомства.</p></div><ol>{steps.map(([number, title, text]) => <li key={number}><span>{number}</span><div><h3>{title}</h3><p>{text}</p></div></li>)}</ol></section>
+}
+
+function Trust() {
+  return <section className="trust" aria-labelledby="trust-title"><p className="eyebrow">04 / почему удобно</p><h2 id="trust-title">Внимательно<br />к <em>деталям.</em></h2><div><p><b>В диалоге</b> — без сложных слов и внезапных решений.</p><p><b>В системе</b> — чтобы дизайн работал не на одном макете, а на всех носителях.</p><p><b>В результате</b> — аккуратные готовые файлы для печати, команды и дальнейшей жизни бренда.</p></div></section>
+}
+
+function RecruiterProfile() {
+  const [open, setOpen] = useState(false)
+  return <section className={`recruiter-profile ${open ? 'recruiter-profile--open' : ''}`} id="profile" aria-labelledby="profile-title"><button className="recruiter-profile__handle" type="button" aria-expanded={open} aria-controls="hr-profile-panel" onClick={() => setOpen(value => !value)}><span>Вы HR?</span><b>{open ? 'Скрыть профиль' : 'Быстрый профиль'}</b><Icon name={open ? 'arrow-up' : 'arrow-down'} /></button><div className="recruiter-profile__drawer" id="hr-profile-panel"><div className="recruiter-profile__drawer-inner"><div className="recruiter-profile__content"><p className="eyebrow">быстрый профиль для HR</p><div><h2 id="profile-title">Дизайнер,<br /><em>который думает</em><br />системой.</h2><p>Работаю с айдентикой, печатными и редакционными форматами. Открыта к junior-позициям, стажировкам и проектной работе в агентствах.</p></div><dl><div><dt>Фокус</dt><dd>Identity · Editorial · Print</dd></div><div><dt>Инструменты</dt><dd>Photoshop · Illustrator · InDesign</dd></div><div><dt>Формат</dt><dd>Томск · удалённо</dd></div></dl><div className="recruiter-profile__links"><a href="/Резюме.pdf" download>Резюме <Icon name="arrow-up-right" /></a><a href="https://t.me/Vol_hsu" target="_blank" rel="noopener noreferrer">Telegram <Icon name="arrow-up-right" /></a><a href="mailto:d1ana.volf@yandex.ru">Почта <Icon name="arrow-up-right" /></a><a href="https://www.behance.net/68325c22" target="_blank" rel="noopener noreferrer">Behance <Icon name="behance" /></a></div></div></div></div></section>
 }
 
 function ProjectIndex({ openProject }: { openProject: (project: Project) => void }) {
+  const showcased = projects.filter(project => project.featured !== false).slice(0, 6)
   const [active, setActive] = useState<Project | null>(null)
   const preview = useRef<HTMLDivElement>(null)
   const previewPosition = useRef({ x: 0, y: 0 })
@@ -79,7 +107,7 @@ function ProjectIndex({ openProject }: { openProject: (project: Project) => void
     setActive(project)
   }
   const movePreview = (event: PointerEvent<HTMLDivElement>) => { if (event.pointerType === 'mouse') positionPreview(event.clientX, event.clientY) }
-  return <section className="works" id="works" aria-labelledby="works-title"><div className="section-top"><p className="eyebrow">selected projects</p><h2 id="works-title">Избранные<br /><em>работы</em></h2><p>2025 — 2026</p></div><div className="project-index" onPointerMove={movePreview}>{projects.map((project) => <button key={project.id} className={`project-row project-row--${project.theme}`} onPointerEnter={(event) => showPreview(event, project)} onFocus={() => setActive(project)} onPointerLeave={() => setActive(null)} onBlur={() => setActive(null)} onClick={() => openProject(project)}><span className="project-row__number">{project.number}</span><span className="project-row__title">{project.title}</span><span className="project-row__meta">{project.tags[0]} <Icon name="arrow-up-right" /></span></button>)}</div>{active && <div ref={preview} className="cursor-preview" style={{ transform: `translate3d(${previewPosition.current.x + 22}px, ${previewPosition.current.y - 150}px, 0)` }} aria-hidden="true"><img src={active.cover} alt="" decoding="async" /><span>Открыть кейс</span></div>}<p className="works__note">Наведите на название<br />или выберите работу</p></section>
+  return <section className="works" id="works" aria-labelledby="works-title"><div className="section-top"><p className="eyebrow">02 / избранные проекты</p><h2 id="works-title">Избранные<br /><em>работы</em></h2><p>2025 — 2026</p></div><p className="works__intro">Четыре проекта, в которых можно увидеть мой подход: от идеи и визуального языка до носителей и вёрстки.</p><div className="project-index" onPointerMove={movePreview}>{showcased.map((project) => <button key={project.id} className={`project-row project-row--${project.theme}`} onPointerEnter={(event) => showPreview(event, project)} onFocus={() => setActive(project)} onPointerLeave={() => setActive(null)} onBlur={() => setActive(null)} onClick={() => openProject(project)}><span className="project-row__number">{project.number}</span><span className="project-row__title">{project.title}</span><span className="project-row__meta">{project.tags[0]} <Icon name="arrow-up-right" /></span></button>)}</div>{active && <div ref={preview} className="cursor-preview" style={{ transform: `translate3d(${previewPosition.current.x + 22}px, ${previewPosition.current.y - 150}px, 0)` }} aria-hidden="true"><img src={active.cover} alt="" decoding="async" /><span>Открыть кейс</span></div>}<p className="works__note">Наведите на название<br />или выберите работу</p></section>
 }
 
 function ProjectCard({ project, index, openProject }: { project: Project; index: number; openProject: (project: Project) => void }) {
@@ -106,7 +134,8 @@ function ProjectCard({ project, index, openProject }: { project: Project; index:
 }
 
 function ProjectCases({ openProject }: { openProject: (project: Project) => void }) {
-  return <section className="case-gallery" aria-label="Превью проектов">{projects.map((project, index) => <ProjectCard key={project.id} project={project} index={index} openProject={openProject} />)}</section>
+  const showcased = projects.filter(project => project.featured !== false).slice(0, 6)
+  return <section className="case-gallery" aria-label="Превью проектов"><div className="case-gallery__divider" aria-hidden="true"><span>Далее — превью кейсов</span><i>↓</i><b>01—{String(showcased.length).padStart(2, '0')}</b></div>{showcased.map((project, index) => <Fragment key={project.id}><ProjectCard project={project} index={index} openProject={openProject} />{index < showcased.length - 1 && <div className="case-gallery__break" aria-hidden="true"><span>следующий кейс</span><i>↓</i><b>{showcased[index + 1].number}</b></div>}</Fragment>)}</section>
 }
 
 function Studio() {
@@ -145,8 +174,8 @@ function Studio() {
   }
   const toggleStudio = () => { if (didDrag.current) { didDrag.current = false; return }; setIsOpen((open) => !open) }
   return <section ref={studio} className={`studio ${isOpen ? 'studio--open' : ''}`} aria-labelledby="studio-title" onPointerMove={isOpen ? moveStudio : undefined} onPointerLeave={resetStudio}>
-    <button className="studio__handle" type="button" aria-expanded={isOpen} aria-controls="studio-panel" onPointerDown={startDrag} onPointerMove={trackDrag} onPointerUp={finishDrag} onClick={toggleStudio}><span>03 / моя студия</span><b>{isOpen ? 'Потяните вниз' : 'Потяните вверх'}</b><Icon name={isOpen ? 'arrow-down' : 'arrow-up'} /></button>
-    <div className="studio__drawer" id="studio-panel"><div className="studio__drawer-inner"><div className="studio__inner"><div className="studio__top"><p className="eyebrow">03 / after hours</p><div><h2 id="studio-title">Моя<br /><em>студия</em></h2><p>Тихий вечер, много растений, идеи на экране<br />и место для будущего портрета.</p></div></div>
+    <button className="studio__handle" type="button" aria-expanded={isOpen} aria-controls="studio-panel" onPointerDown={startDrag} onPointerMove={trackDrag} onPointerUp={finishDrag} onClick={toggleStudio}><span>07 / моя студия</span><b>{isOpen ? 'Потяните вниз' : 'Потяните вверх'}</b><Icon name={isOpen ? 'arrow-down' : 'arrow-up'} /></button>
+    <div className="studio__drawer" id="studio-panel"><div className="studio__drawer-inner"><div className="studio__inner"><div className="studio__top"><p className="eyebrow">07 / after hours</p><div><h2 id="studio-title">Моя<br /><em>студия</em></h2><p>Тихий вечер, много растений, идеи на экране<br />и место для будущего портрета.</p></div></div>
       <div className="studio__viewport"><div className="studio__stage"><img className="studio__night-wall" src={studioNightWall} alt="" aria-hidden="true" loading="lazy" decoding="async" /><div className="studio__window"><img src={voxelStudioRoom} alt="Пиксельная студия: дизайнер работает за компьютером среди растений, полок и кота; в рамке на столе — портрет Дианы Вольф" loading="lazy" decoding="async" fetchPriority="low" /><span className="studio__glass" aria-hidden="true" /><span className="studio__shine studio__shine--one" aria-hidden="true" /><span className="studio__shine studio__shine--two" aria-hidden="true" /></div></div></div></div></div></div>
   </section>
 }
@@ -205,7 +234,7 @@ function About() {
           <span><Icon name="zoom" /> Открыть портфолио</span>
         </button>
         <div className="about__copy">
-          <p className="eyebrow">01 / about me</p>
+          <p className="eyebrow">05 / about me</p>
           <h2 id="about-title"><span>Дизайн —</span><span>это <em>внимание</em></span><span>к деталям.</span></h2>
           <p>Начинающий графический дизайнер из Томска. Создаю визуальные решения для печатной и рекламной продукции, айдентики и многостраничных изданий.</p>
         </div>
@@ -221,7 +250,7 @@ function About() {
     </div>}
   </>
 }
-function Skills() { return <section className="skills" id="skills" aria-labelledby="skills-title"><img className="skills__pixel-cat" src={pixelCatSkills} alt="" loading="lazy" decoding="async" aria-hidden="true" /><div><p className="eyebrow">02 / toolkit</p><h2 id="skills-title">Работаю<br />в <em>системе</em></h2></div><ul className="skills__list"><li><i>PS</i>Adobe Photoshop</li><li><i>AI</i>Adobe Illustrator</li><li><i>ID</i>Adobe InDesign</li></ul><div className="qualities"><span>внимание к деталям</span><span>самоорганизация</span><span>ответственность</span><span>дисциплина</span><span>работа с ТЗ</span></div></section> }
+function Skills() { return <section className="skills" id="skills" aria-labelledby="skills-title"><img className="skills__pixel-cat" src={pixelCatSkills} alt="" loading="lazy" decoding="async" aria-hidden="true" /><div><p className="eyebrow">06 / toolkit</p><h2 id="skills-title">Работаю<br />в <em>системе</em></h2></div><ul className="skills__list"><li><i>PS</i>Adobe Photoshop</li><li><i>AI</i>Adobe Illustrator</li><li><i>ID</i>Adobe InDesign</li></ul><div className="qualities"><span>внимание к деталям</span><span>самоорганизация</span><span>ответственность</span><span>дисциплина</span><span>работа с ТЗ</span></div></section> }
 function Contact() {
   const contact = useRef<HTMLElement>(null)
   const moveCats = (event: PointerEvent<HTMLElement>) => {
@@ -235,7 +264,7 @@ function Contact() {
     cat?.style.setProperty('--pixel-cat-rotate', `${x * 5}deg`)
   }
   const resetCats = () => { const cat = contact.current?.querySelector<HTMLElement>('.contact__pixel-cat'); cat?.style.setProperty('--pixel-cat-x', '0px'); cat?.style.setProperty('--pixel-cat-y', '0px'); cat?.style.setProperty('--pixel-cat-rotate', '0deg') }
-  return <section ref={contact} className="contact" id="contact" aria-labelledby="contact-title" onPointerMove={moveCats} onPointerLeave={resetCats}><div className="contact__pixel-cat" aria-hidden="true"><img className="contact__pixel-cat-open" src={pixelCatContactOpen} alt="" loading="lazy" decoding="async" /><img className="contact__pixel-cat-closed" src={pixelCatContactClosed} alt="" loading="lazy" decoding="async" /></div><p className="eyebrow">Есть проект?</p><h2 id="contact-title">Давайте<br /><em>обсудим.</em></h2><p className="contact__sub">Вы можете написать мне в Telegram<br />или отправить письмо.</p><div className="contact__actions"><a className="magnetic" href="https://t.me/Vol_hsu" target="_blank" rel="noopener noreferrer">Написать мне <Icon name="arrow-up-right" /></a><a href="mailto:d1ana.volf@yandex.ru">d1ana.volf@yandex.ru</a></div><footer><span>DIANA VOLF<br />GRAPHIC DESIGNER</span><span>© 2026</span><a href="#top">Back to top <Icon name="arrow-up" /></a></footer></section> }
+  return <section ref={contact} className="contact" id="contact" aria-labelledby="contact-title" onPointerMove={moveCats} onPointerLeave={resetCats}><div className="contact__pixel-cat" aria-hidden="true"><img className="contact__pixel-cat-open" src={pixelCatContactOpen} alt="" loading="lazy" decoding="async" /><img className="contact__pixel-cat-closed" src={pixelCatContactClosed} alt="" loading="lazy" decoding="async" /></div><p className="eyebrow">Есть проект?</p><h2 id="contact-title">Давайте<br /><em>обсудим.</em></h2><p className="contact__sub">Открою Telegram с коротким шаблоном —<br />вам останется написать пару строк о задаче.</p><div className="contact__actions"><a className="magnetic" href={telegramLink('Привет, Диана! Хочу обсудить дизайн-проект.\n\nМой бизнес / проект: \nЗадача: \nЖелаемый срок: ')} target="_blank" rel="noopener noreferrer">Обсудить проект <Icon name="arrow-up-right" /></a><a href="mailto:d1ana.volf@yandex.ru">d1ana.volf@yandex.ru</a></div><footer><span>DIANA VOLF<br />GRAPHIC DESIGNER</span><span>© 2026</span><a className="contact__behance" href="https://www.behance.net/68325c22" target="_blank" rel="noopener noreferrer">Behance <Icon name="behance" /></a><a className="contact__back" href="#top">Back to top <Icon name="arrow-up" /></a></footer></section> }
 
 type ZoomedImage = { src: string; alt: string }
 function CaseDialog({ project, close, next }: { project: Project; close: () => void; next: () => void }) {
@@ -251,8 +280,8 @@ function CaseDialog({ project, close, next }: { project: Project; close: () => v
     event.currentTarget.style.setProperty('--case-decor-y', `${offset * -.035}px`)
     event.currentTarget.style.setProperty('--case-decor-y-reverse', `${offset * .025}px`)
   }
-  return <div ref={dialog} className={`dialog dialog--${project.theme}`} role="dialog" aria-modal="true" aria-labelledby="case-title" onScroll={moveDecor}><div className="dialog__ornaments" aria-hidden="true"><span>{project.number}</span><i /><b /></div><div className="dialog__bar"><span>DIANA VOLF / SELECTED WORK</span><button ref={closeButton} onClick={close} aria-label="Закрыть проект">Закрыть <Icon name="close" /></button></div><main className="case"><header><p className="eyebrow">{project.number} / {project.year}</p><h2 id="case-title">{project.title}</h2><p className="case__subtitle">{project.subtitle}</p><div className="tags">{project.tags.map(tag => <span key={tag}>{tag}</span>)}</div></header><div className="case__lead"><p>{project.description}</p><span>Scroll to explore <Icon name="arrow-down" /></span></div><div className="case__images">{project.images.map((image, index) => { const alt = `${project.title}: ${index === 0 ? 'обложка проекта' : 'детали работы'}`; return <figure key={image} className={index === 0 ? 'case__image case__image--hero' : 'case__image'}><button className="case__image-button" onClick={() => setZoomedImage({ src: image, alt })} aria-label={`Увеличить изображение: ${alt}`}><img src={image} alt={alt} /><span><Icon name="zoom" /> Увеличить</span></button></figure> })}</div><button className="next-project" onClick={next}>Следующий проект <Icon name="arrow-right" /></button></main>{zoomedImage && <div className="image-lightbox" role="dialog" aria-modal="true" aria-label="Увеличенное изображение" onClick={() => setZoomedImage(null)}><button className="image-lightbox__close" onClick={() => setZoomedImage(null)} aria-label="Закрыть увеличенное изображение"><Icon name="close" /></button><img src={zoomedImage.src} alt={zoomedImage.alt} onClick={(event) => event.stopPropagation()} /></div>}</div>
+  return <div ref={dialog} className={`dialog dialog--${project.theme}`} role="dialog" aria-modal="true" aria-labelledby="case-title" onScroll={moveDecor}><div className="dialog__ornaments" aria-hidden="true"><span>{project.number}</span><i /><b /></div><div className="dialog__bar"><span>DIANA VOLF / SELECTED WORK</span><button ref={closeButton} onClick={close} aria-label="Закрыть проект">Закрыть <Icon name="close" /></button></div><main className="case"><header><p className="eyebrow">{project.number} / {project.year}</p><h2 id="case-title">{project.title}</h2><p className="case__subtitle">{project.subtitle}</p><div className="case__meta">{project.status && <span>{project.status}</span>}<span>Кейс · {project.year}</span></div><div className="tags">{project.tags.map(tag => <span key={tag}>{tag}</span>)}</div></header><div className="case__lead"><p>{project.description}</p><span>Scroll to explore <Icon name="arrow-down" /></span></div>{(project.brief || project.role || project.deliverables || project.tools || project.result) && <section className="case__proof" aria-label="Детали проекта">{project.brief && <div><b>Задача</b><p>{project.brief}</p></div>}{project.role && <div><b>Моя роль</b><p>{project.role}</p></div>}{project.deliverables && <div><b>Что сделано</b><p>{project.deliverables.join(' · ')}</p></div>}{project.tools && <div><b>Инструменты</b><p>{project.tools.join(' · ')}</p></div>}{project.result && <div><b>Результат</b><p>{project.result}</p></div>}</section>}<div className="case__images">{project.images.map((image, index) => { const alt = `${project.title}: ${index === 0 ? 'обложка проекта' : 'детали работы'}`; return <figure key={image} className={index === 0 ? 'case__image case__image--hero' : 'case__image'}><button className="case__image-button" onClick={() => setZoomedImage({ src: image, alt })} aria-label={`Увеличить изображение: ${alt}`}><img src={image} alt={alt} /><span><Icon name="zoom" /> Увеличить</span></button></figure> })}</div><button className="next-project" onClick={next}>Следующий проект <Icon name="arrow-right" /></button></main>{zoomedImage && <div className="image-lightbox" role="dialog" aria-modal="true" aria-label="Увеличенное изображение" onClick={() => setZoomedImage(null)}><button className="image-lightbox__close" onClick={() => setZoomedImage(null)} aria-label="Закрыть увеличенное изображение"><Icon name="close" /></button><img src={zoomedImage.src} alt={zoomedImage.alt} onClick={(event) => event.stopPropagation()} /></div>}</div>
 }
 
-function App() { const [selected, setSelected] = useState<Project | null>(null); const nextProject = () => { if (selected) setSelected(projects[(projects.indexOf(selected) + 1) % projects.length]) }; return <><Header /><main><Hero /><ProjectIndex openProject={setSelected} /><ProjectCases openProject={setSelected} /><About /><Skills /><Studio /><Contact /></main>{selected && <CaseDialog project={selected} close={() => setSelected(null)} next={nextProject} />}</> }
+function App() { const [selected, setSelected] = useState<Project | null>(null); const nextProject = () => { if (selected) setSelected(projects[(projects.indexOf(selected) + 1) % projects.length]) }; return <><Header /><main><Hero /><RecruiterProfile /><Services /><ProjectIndex openProject={setSelected} /><ProjectCases openProject={setSelected} /><Process /><Trust /><About /><Skills /><Studio /><Contact /></main>{selected && <CaseDialog project={selected} close={() => setSelected(null)} next={nextProject} />}</> }
 export default App
