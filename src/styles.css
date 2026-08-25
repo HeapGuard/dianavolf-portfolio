@@ -241,13 +241,20 @@ h1, h2, p { margin-top: 0; } em { font-style: normal; font-family: 'Nauryz', var
 .ticker div > span i { padding: 0 .15em; color: var(--pale-blue); font-style: normal; }
 @keyframes ticker-loop { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(-50%, 0, 0); } }
 
-/* Desktop contact space becomes three independent 3D stickers. */
-.contact__cats { position: absolute; z-index: 1; top: 50%; right: clamp(1rem, 5vw, 7rem); width: min(33vw, 29rem); height: min(72vh, 43rem); pointer-events: none; transform: translateY(-50%); }
-.contact__cat { position: absolute; display: block; max-width: 100%; filter: drop-shadow(0 1rem 1.15rem #07102aa8); transform-style: preserve-3d; transition: transform .38s cubic-bezier(.16, 1, .3, 1), filter .38s ease; will-change: transform; }
-.contact__cat--envelope { top: -3%; right: 4%; width: 52%; transform: translate3d(var(--cat-one-x, 0px), var(--cat-one-y, 0px), 0) perspective(1000px) rotateY(var(--cat-one-rotate, 0deg)) rotate(-7deg); }
-.contact__cat--dream { top: 31%; left: -7%; width: 62%; transform: translate3d(var(--cat-two-x, 0px), var(--cat-two-y, 0px), 0) perspective(1000px) rotateY(var(--cat-two-rotate, 0deg)) rotate(6deg); }
-.contact__cat--note { right: -2%; bottom: -2%; width: 52%; transform: translate3d(var(--cat-three-x, 0px), var(--cat-three-y, 0px), 0) perspective(1000px) rotateY(var(--cat-three-rotate, 0deg)) rotate(-4deg); }
+.about__pixel-cat, .skills__pixel-cat, .contact__pixel-cat { image-rendering: pixelated; pointer-events: none; }
+.about .about__pixel-cat { position: absolute; z-index: 2; left: 0; bottom: clamp(2rem, 6vw, 6rem); width: min(17vw, 12rem); margin: 0; border-radius: 0; }
+.skills { position: relative; overflow: hidden; }
+.skills__pixel-cat { position: absolute; z-index: 0; right: max(-1.8rem, -3vw); bottom: clamp(2rem, 7vw, 7rem); width: min(16vw, 12rem); }
+.skills > :not(.skills__pixel-cat) { position: relative; z-index: 1; }
+.contact__pixel-cat { --pixel-cat-x: 0px; --pixel-cat-y: 0px; --pixel-cat-rotate: 0deg; position: absolute; z-index: 1; right: clamp(1rem, 7vw, 9rem); top: 50%; width: min(32vw, 30rem); transform: translate3d(var(--pixel-cat-x), calc(-50% + var(--pixel-cat-y)), 0) rotate(var(--pixel-cat-rotate)); transform-origin: 50% 80%; transition: transform .35s cubic-bezier(.16, 1, .3, 1); will-change: transform; }
+
+@media (min-width: 701px) {
+  .case-card > button { grid-column: 1 / span 7; }
+  .case-card--offset > button { grid-column: 6 / span 7; }
+  .case-card::after { grid-column: 1 / span 7; }
+  .case-card--offset::after { grid-column: 6 / span 7; }
+}
 
 @media (max-width: 700px) {
-  .contact__cats { display: none; }
+  .about__pixel-cat, .skills__pixel-cat, .contact__pixel-cat { display: none; }
 }
