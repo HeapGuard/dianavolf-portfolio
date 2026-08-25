@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type PointerEvent, type ReactNode, type UIEvent } from 'react'
 import { assets, projects, type Project } from './data/projects'
+import contactCats from './media/contact-cats.png'
 import './styles.css'
 
 type IconName = 'arrow-down' | 'arrow-up' | 'arrow-right' | 'arrow-up-right' | 'close' | 'menu' | 'zoom'
@@ -148,7 +149,7 @@ function About() {
         </div>
       </div>
     </section>
-    <div className="ticker" aria-label="Направления работы"><div>ЛОГОТИПЫ <span>•</span> EDITORIAL <span>•</span> АФИШИ <span>•</span> BRANDING <span>•</span> PRINT <span>•</span> ЖУРНАЛЫ <span>•</span></div></div>
+    <div className="ticker" aria-label="Направления работы"><div><span>ЛОГОТИПЫ <i>•</i> EDITORIAL <i>•</i> АФИШИ <i>•</i> BRANDING <i>•</i> PRINT <i>•</i> ЖУРНАЛЫ <i>•</i></span><span aria-hidden="true">ЛОГОТИПЫ <i>•</i> EDITORIAL <i>•</i> АФИШИ <i>•</i> BRANDING <i>•</i> PRINT <i>•</i> ЖУРНАЛЫ <i>•</i></span></div></div>
     {portfolioOpen && <div className={`image-lightbox about-lightbox ${portfolioClosing ? 'about-lightbox--closing' : ''}`} role="dialog" aria-modal="true" aria-label="Портфолио Дианы Вольф" onClick={closePortfolio}>
       <button className="image-lightbox__close" onClick={(event) => { event.stopPropagation(); closePortfolio() }} aria-label="Закрыть портфолио"><Icon name="close" /></button>
       <div className="about-lightbox__sheet" onClick={(event) => { event.stopPropagation(); closePortfolio() }}>
@@ -158,8 +159,20 @@ function About() {
     </div>}
   </>
 }
-function Skills() { return <section className="skills" id="skills" aria-labelledby="skills-title"><div><p className="eyebrow">02 / toolkit</p><h2 id="skills-title">Работаю<br />в <em>системе</em></h2></div><ul className="skills__list"><li><i>PS</i>Adobe Photoshop</li><li><i>AI</i>Adobe Illustrator</li><li><i>ID</i>Adobe InDesign</li></ul><div className="qualities"><span>внимание к деталям</span><span>самоорганизация</span><span>ответственность</span><span>дисциплина</span><span>работа с ТЗ</span></div></section> }
-function Contact() { return <section className="contact" id="contact" aria-labelledby="contact-title"><p className="eyebrow">Есть проект?</p><h2 id="contact-title">Давайте<br /><em>обсудим.</em></h2><p className="contact__sub">Вы можете написать мне в Telegram<br />или отправить письмо.</p><div className="contact__actions"><a className="magnetic" href="https://t.me/Vol_hsu" target="_blank" rel="noopener noreferrer">Написать мне <Icon name="arrow-up-right" /></a><a href="mailto:d1ana.volf@yandex.ru">d1ana.volf@yandex.ru</a></div><footer><span>DIANA VOLF<br />GRAPHIC DESIGNER</span><span>© 2026</span><a href="#top">Back to top <Icon name="arrow-up" /></a></footer></section> }
+function Skills() { return <section className="skills" id="skills" aria-labelledby="skills-title"><div className="skills__decor" aria-hidden="true"><span>03</span><i /><b /></div><div><p className="eyebrow">02 / toolkit</p><h2 id="skills-title">Работаю<br />в <em>системе</em></h2></div><ul className="skills__list"><li><i>PS</i>Adobe Photoshop</li><li><i>AI</i>Adobe Illustrator</li><li><i>ID</i>Adobe InDesign</li></ul><div className="qualities"><span>внимание к деталям</span><span>самоорганизация</span><span>ответственность</span><span>дисциплина</span><span>работа с ТЗ</span></div></section> }
+function Contact() {
+  const contact = useRef<HTMLElement>(null)
+  const moveCats = (event: PointerEvent<HTMLElement>) => {
+    if (event.pointerType !== 'mouse' || !contact.current || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const bounds = contact.current.getBoundingClientRect()
+    const x = (event.clientX - bounds.left) / bounds.width - .5
+    const y = (event.clientY - bounds.top) / bounds.height - .5
+    contact.current.style.setProperty('--cats-x', `${x * 26}px`)
+    contact.current.style.setProperty('--cats-y', `${y * 18}px`)
+    contact.current.style.setProperty('--cats-rotate', `${x * 2.2}deg`)
+  }
+  const resetCats = () => { if (contact.current) { contact.current.style.setProperty('--cats-x', '0px'); contact.current.style.setProperty('--cats-y', '0px'); contact.current.style.setProperty('--cats-rotate', '0deg') } }
+  return <section ref={contact} className="contact" id="contact" aria-labelledby="contact-title" onPointerMove={moveCats} onPointerLeave={resetCats}><div className="contact__cats" aria-hidden="true"><img src={contactCats} alt="" loading="lazy" decoding="async" /></div><p className="eyebrow">Есть проект?</p><h2 id="contact-title">Давайте<br /><em>обсудим.</em></h2><p className="contact__sub">Вы можете написать мне в Telegram<br />или отправить письмо.</p><div className="contact__actions"><a className="magnetic" href="https://t.me/Vol_hsu" target="_blank" rel="noopener noreferrer">Написать мне <Icon name="arrow-up-right" /></a><a href="mailto:d1ana.volf@yandex.ru">d1ana.volf@yandex.ru</a></div><footer><span>DIANA VOLF<br />GRAPHIC DESIGNER</span><span>© 2026</span><a href="#top">Back to top <Icon name="arrow-up" /></a></footer></section> }
 
 type ZoomedImage = { src: string; alt: string }
 function CaseDialog({ project, close, next }: { project: Project; close: () => void; next: () => void }) {

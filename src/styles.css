@@ -234,3 +234,30 @@ h1, h2, p { margin-top: 0; } em { font-style: normal; font-family: 'Nauryz', var
   .dialog__ornaments span { right: 1rem; }
   .dialog__ornaments i { left: 1rem; }
 }
+
+/* Two identical ticker segments make the loop continuous at the seam. */
+.ticker div { display: flex; width: max-content; animation: ticker-loop 30s linear infinite; }
+.ticker div > span { display: block; flex: 0 0 auto; padding-right: .35em; color: inherit; }
+.ticker div > span i { padding: 0 .15em; color: var(--pale-blue); font-style: normal; }
+@keyframes ticker-loop { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(-50%, 0, 0); } }
+
+/* A restrained orbit keeps the toolkit section editorial rather than empty. */
+.skills { position: relative; overflow: hidden; isolation: isolate; }
+.skills > :not(.skills__decor) { position: relative; z-index: 1; }
+.skills__decor { position: absolute; z-index: 0; right: clamp(1rem, 6vw, 8rem); bottom: clamp(1rem, 5vw, 5rem); width: clamp(8rem, 16vw, 15rem); aspect-ratio: 1; color: var(--blue); opacity: .18; pointer-events: none; }
+.skills__decor::before, .skills__decor::after, .skills__decor i { content: ''; position: absolute; display: block; border: 1px solid currentColor; border-radius: 50%; }
+.skills__decor::before { inset: 0; }
+.skills__decor::after { inset: 18%; }
+.skills__decor i { inset: 36%; }
+.skills__decor span { position: absolute; z-index: 1; top: 42%; left: 50%; transform: translate(-50%, -50%); font: clamp(1.5rem, 3vw, 3rem)/.8 var(--serif); letter-spacing: -.08em; }
+.skills__decor b { position: absolute; right: -7%; top: 45%; width: 16%; aspect-ratio: 1; border-radius: 50%; background: currentColor; }
+
+/* Desktop contact space becomes a responsive 3D sticker field. */
+.contact__cats { --cats-x: 0px; --cats-y: 0px; --cats-rotate: 0deg; position: absolute; z-index: 1; top: 49%; right: clamp(1rem, 6vw, 8rem); width: min(31vw, 27rem); pointer-events: none; transform: translate3d(var(--cats-x), calc(-50% + var(--cats-y)), 0) perspective(1000px) rotateY(var(--cats-rotate)); transform-style: preserve-3d; transition: transform .35s cubic-bezier(.16, 1, .3, 1); }
+.contact__cats::before { content: ''; position: absolute; z-index: -1; inset: 13% 8%; border-radius: 50%; background: #091331; filter: blur(28px); opacity: .48; transform: translate3d(0, 1.3rem, 0) scale(.9); }
+.contact__cats img { display: block; width: 100%; filter: drop-shadow(0 1rem 1.3rem #07102a99); transform: translateZ(25px); }
+
+@media (max-width: 700px) {
+  .skills__decor { right: -1rem; bottom: 1.5rem; width: 9rem; }
+  .contact__cats { display: none; }
+}
