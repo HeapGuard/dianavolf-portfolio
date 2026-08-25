@@ -17,6 +17,30 @@ npm run build
 
 Папку `dist/` можно загрузить в Cloudflare Pages, Netlify или Vercel. Для Cloudflare Pages укажите команды `npm run build` и каталог `dist`. Файл `public/_headers` будет опубликован как `_headers` и задаст CSP, запрет встраивания сайта в iframe и отключение ненужных разрешений браузера.
 
+## Одна команда: GitHub + VPS
+
+Для основного сайта используйте:
+
+```powershell
+python deploy.py "Обновить портфолио"
+```
+
+Скрипт работает только из ветки `main`: добавляет изменения, создаёт коммит, пушит его в GitHub, собирает сайт и публикует новый релиз на VPS. VPN он не трогает.
+
+Локально создайте `deploy.config.json` (файл игнорируется Git):
+
+```json
+{
+  "host": "ВАШ_IP_VPS",
+  "user": "root",
+  "port": 22,
+  "ssh_key_path": "C:/Users/ВАШ_ПОЛЬЗОВАТЕЛЬ/.ssh/КЛЮЧ",
+  "domain": "dianavolf.ru",
+  "remote_root": "/var/www/dianavolf.ru",
+  "caddy_service": "caddy-naive"
+}
+```
+
 ## Как добавить или изменить работу
 
 1. Сохраните две или больше картинок работы в JPG (длинная сторона до 2000 px, качество 75-85%) и положите их в `src/media/`. Например: `coffee-cover.jpg` и `coffee-details.jpg`.

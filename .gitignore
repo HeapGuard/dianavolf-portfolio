@@ -4,8 +4,11 @@ dist/
 portf-images/
 *.log
 *.tsbuildinfo
+__pycache__/
 vite.config.js
 vite.config.d.ts
 .DS_Store
+deploy.config.json
+правки/
 Резюме.pdf
 ТЗ для Codex — сайт-портфолио графического дизайнера.md
