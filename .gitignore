@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.vite/
+portf-images/
+*.log
+*.tsbuildinfo
+vite.config.js
+vite.config.d.ts
+.DS_Store
+Резюме.pdf
+ТЗ для Codex — сайт-портфолио графического дизайнера.md
