@@ -6,6 +6,7 @@ import pixelCatContactOpen from './media/pixel-cat-contact-open.png'
 import pixelCatHeroClosed from './media/pixel-cat-hero-closed.png'
 import pixelCatHeroOpen from './media/pixel-cat-hero-open.png'
 import pixelCatSkills from './media/pixel-cat-skills.png'
+import voxelStudioRoom from './media/voxel-studio-room.png'
 import './styles.css'
 
 type IconName = 'arrow-down' | 'arrow-up' | 'arrow-right' | 'arrow-up-right' | 'close' | 'menu' | 'zoom'
@@ -105,6 +106,37 @@ function ProjectCard({ project, index, openProject }: { project: Project; index:
 
 function ProjectCases({ openProject }: { openProject: (project: Project) => void }) {
   return <section className="case-gallery" aria-label="Превью проектов">{projects.map((project, index) => <ProjectCard key={project.id} project={project} index={index} openProject={openProject} />)}</section>
+}
+
+function Studio() {
+  const studio = useRef<HTMLElement>(null)
+  const frame = useRef<number | null>(null)
+  const pending = useRef({ x: 0, y: 0 })
+  const applyMovement = () => {
+    frame.current = null
+    if (!studio.current) return
+    const { x, y } = pending.current
+    studio.current.style.setProperty('--studio-x', `${x * 16}px`)
+    studio.current.style.setProperty('--studio-y', `${y * 10}px`)
+    studio.current.style.setProperty('--studio-tilt', `${x * 1.25}deg`)
+  }
+  const moveStudio = (event: PointerEvent<HTMLElement>) => {
+    if (event.pointerType !== 'mouse' || !studio.current || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const bounds = studio.current.getBoundingClientRect()
+    pending.current = { x: (event.clientX - bounds.left) / bounds.width - .5, y: (event.clientY - bounds.top) / bounds.height - .5 }
+    if (frame.current === null) frame.current = requestAnimationFrame(applyMovement)
+  }
+  const resetStudio = () => {
+    if (frame.current !== null) { cancelAnimationFrame(frame.current); frame.current = null }
+    if (!studio.current) return
+    studio.current.style.setProperty('--studio-x', '0px')
+    studio.current.style.setProperty('--studio-y', '0px')
+    studio.current.style.setProperty('--studio-tilt', '0deg')
+  }
+  return <section ref={studio} className="studio" aria-labelledby="studio-title" onPointerMove={moveStudio} onPointerLeave={resetStudio}>
+    <div className="studio__top"><p className="eyebrow">03 / after hours</p><div><h2 id="studio-title">Моя<br /><em>студия</em></h2><p>Тихий вечер, много растений, идеи на экране<br />и место для будущего портрета.</p></div></div>
+    <div className="studio__viewport"><div className="studio__window"><img src={voxelStudioRoom} alt="Пиксельная студия: дизайнер работает за компьютером среди растений, полок и кота" loading="lazy" decoding="async" fetchPriority="low" /><span className="studio__glass" aria-hidden="true" /><span className="studio__shine studio__shine--one" aria-hidden="true" /><span className="studio__shine studio__shine--two" aria-hidden="true" /><span className="studio__frame-note" aria-hidden="true">portrait<br />soon</span></div><p className="studio__caption">смотрим в окно / личная студия</p></div>
+  </section>
 }
 
 function About() {
@@ -210,5 +242,5 @@ function CaseDialog({ project, close, next }: { project: Project; close: () => v
   return <div ref={dialog} className={`dialog dialog--${project.theme}`} role="dialog" aria-modal="true" aria-labelledby="case-title" onScroll={moveDecor}><div className="dialog__ornaments" aria-hidden="true"><span>{project.number}</span><i /><b /></div><div className="dialog__bar"><span>DIANA VOLF / SELECTED WORK</span><button ref={closeButton} onClick={close} aria-label="Закрыть проект">Закрыть <Icon name="close" /></button></div><main className="case"><header><p className="eyebrow">{project.number} / {project.year}</p><h2 id="case-title">{project.title}</h2><p className="case__subtitle">{project.subtitle}</p><div className="tags">{project.tags.map(tag => <span key={tag}>{tag}</span>)}</div></header><div className="case__lead"><p>{project.description}</p><span>Scroll to explore <Icon name="arrow-down" /></span></div><div className="case__images">{project.images.map((image, index) => { const alt = `${project.title}: ${index === 0 ? 'обложка проекта' : 'детали работы'}`; return <figure key={image} className={index === 0 ? 'case__image case__image--hero' : 'case__image'}><button className="case__image-button" onClick={() => setZoomedImage({ src: image, alt })} aria-label={`Увеличить изображение: ${alt}`}><img src={image} alt={alt} /><span><Icon name="zoom" /> Увеличить</span></button></figure> })}</div><button className="next-project" onClick={next}>Следующий проект <Icon name="arrow-right" /></button></main>{zoomedImage && <div className="image-lightbox" role="dialog" aria-modal="true" aria-label="Увеличенное изображение" onClick={() => setZoomedImage(null)}><button className="image-lightbox__close" onClick={() => setZoomedImage(null)} aria-label="Закрыть увеличенное изображение"><Icon name="close" /></button><img src={zoomedImage.src} alt={zoomedImage.alt} onClick={(event) => event.stopPropagation()} /></div>}</div>
 }
 
-function App() { const [selected, setSelected] = useState<Project | null>(null); const nextProject = () => { if (selected) setSelected(projects[(projects.indexOf(selected) + 1) % projects.length]) }; return <><Header /><main><Hero /><ProjectIndex openProject={setSelected} /><ProjectCases openProject={setSelected} /><About /><Skills /><Contact /></main>{selected && <CaseDialog project={selected} close={() => setSelected(null)} next={nextProject} />}</> }
+function App() { const [selected, setSelected] = useState<Project | null>(null); const nextProject = () => { if (selected) setSelected(projects[(projects.indexOf(selected) + 1) % projects.length]) }; return <><Header /><main><Hero /><ProjectIndex openProject={setSelected} /><ProjectCases openProject={setSelected} /><Studio /><About /><Skills /><Contact /></main>{selected && <CaseDialog project={selected} close={() => setSelected(null)} next={nextProject} />}</> }
 export default App

@@ -273,3 +273,22 @@ h1, h2, p { margin-top: 0; } em { font-style: normal; font-family: 'Nauryz', var
   .hero__pixel-cat { top: -.85rem; left: 50%; width: 23vw; }
   .contact__pixel-cat { top: 61%; right: .55rem; width: min(25vw, 9rem); }
 }
+
+/* A lightweight 2.5D voxel studio: one optimised scene, with a few compositor-only layers above it. */
+.studio { --studio-x: 0px; --studio-y: 0px; --studio-tilt: 0deg; position: relative; overflow: hidden; padding: clamp(5rem, 10vw, 10rem) clamp(1.1rem, 6vw, 7rem); background: var(--cream); color: var(--ink); }
+.studio::before { content: ''; position: absolute; inset: 0; opacity: .4; background-image: radial-gradient(#45518c2b .75px, transparent .85px); background-size: 12px 12px; pointer-events: none; }
+.studio__top, .studio__viewport { position: relative; z-index: 1; width: min(100%, 84rem); margin-inline: auto; }
+.studio__top { display: grid; grid-template-columns: minmax(8rem, .45fr) 1fr; gap: 2rem; align-items: start; }
+.studio__top h2 { margin: 0; font: clamp(4rem, 9vw, 9rem)/.72 var(--serif); letter-spacing: -.08em; }
+.studio__top > div > p { max-width: 29rem; margin: 2rem 0 0; font-size: clamp(.76rem, 1.05vw, .98rem); line-height: 1.8; }
+.studio__viewport { margin-top: clamp(3rem, 7vw, 6rem); perspective: 1200px; }
+.studio__window { position: relative; overflow: hidden; border: clamp(.55rem, 1.1vw, 1rem) solid #142653; border-radius: clamp(1rem, 2vw, 1.8rem); background: #0c1836; box-shadow: 0 1.6rem 4rem #1c2d5d38; transform: perspective(1200px) rotateY(var(--studio-tilt)); transform-style: preserve-3d; transition: transform .5s cubic-bezier(.16, 1, .3, 1), box-shadow .5s ease; }
+.studio__window > img { display: block; width: 100%; height: auto; transform: translate3d(var(--studio-x), var(--studio-y), 0) scale(1.025); transform-origin: center; transition: transform .5s cubic-bezier(.16, 1, .3, 1); }
+.studio__glass { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(118deg, #d9e9ff17 8%, transparent 31%, transparent 63%, #d9e9ff0f 82%); transform: translate3d(var(--studio-x), var(--studio-y), 2rem); }
+.studio__shine { position: absolute; z-index: 2; width: .3rem; height: .3rem; border-radius: 50%; background: var(--paper); box-shadow: 0 0 .7rem .22rem #ede7dd88; opacity: .35; pointer-events: none; animation: studio-glow 3.8s ease-in-out infinite alternate; }
+.studio__shine--one { top: 20%; left: 21%; }.studio__shine--two { right: 16%; bottom: 25%; animation-delay: -1.5s; }
+.studio__frame-note { position: absolute; z-index: 2; top: 54%; left: 52%; transform: translate3d(-50%, -50%, 2rem) rotate(-1deg); color: #1c2d5d77; font: 700 clamp(.35rem, .55vw, .56rem)/1.18 var(--sans); letter-spacing: .08em; text-align: center; text-transform: uppercase; pointer-events: none; }
+.studio__caption { margin: .9rem 1rem 0; color: var(--blue); font-size: .56rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+@keyframes studio-glow { from { opacity: .16; transform: scale(.75); } to { opacity: .52; transform: scale(1.15); } }
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) { .studio__window { will-change: transform; } .studio:hover .studio__window { box-shadow: 0 2rem 4.5rem #1c2d5d52; } }
+@media (max-width: 700px) { .studio { padding-block: 4.5rem; }.studio__top { display: block; }.studio__top .eyebrow { margin-bottom: 2rem; }.studio__top > div > p { margin-top: 1.4rem; }.studio__viewport { margin-top: 2.8rem; }.studio__window { border-width: .45rem; border-radius: .9rem; transform: none; }.studio__window > img { transform: none; }.studio__glass { display: none; }.studio__frame-note { top: 53.5%; left: 52%; font-size: .32rem; }.studio__caption { margin-inline: 0; }.studio__shine { display: none; } }
