@@ -9,3 +9,4 @@ vite.config.d.ts
 .DS_Store
 Резюме.pdf
 ТЗ для Codex — сайт-портфолио графического дизайнера.md
+deploy.config.json
