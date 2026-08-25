@@ -258,3 +258,17 @@ h1, h2, p { margin-top: 0; } em { font-style: normal; font-family: 'Nauryz', var
 @media (max-width: 700px) {
   .about__pixel-cat, .skills__pixel-cat, .contact__pixel-cat { display: none; }
 }
+
+/* Pixel cat cameo in the opening scene and a two-frame blinking contact sticker. */
+.hero__pixel-cat { position: absolute; z-index: 2; top: 13%; right: clamp(.6rem, 4vw, 5rem); width: min(14vw, 9rem); image-rendering: pixelated; pointer-events: none; }
+.contact__pixel-cat { display: block; aspect-ratio: 3 / 2; image-rendering: auto; }
+.contact__pixel-cat img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; image-rendering: pixelated; pointer-events: none; }
+.contact__pixel-cat-open { z-index: 1; animation: pixel-cat-open 5.2s steps(1, end) infinite; }
+.contact__pixel-cat-closed { z-index: 1; animation: pixel-cat-closed 5.2s steps(1, end) infinite; }
+.contact__pixel-cat > span { position: absolute; z-index: 2; top: 72%; left: 43%; width: 42%; transform: translate(-50%, -50%); color: var(--blue); font: 700 clamp(.5rem, .8vw, .78rem)/1.15 var(--sans); letter-spacing: .05em; text-align: center; text-transform: uppercase; }
+@keyframes pixel-cat-open { 0%, 92%, 100% { opacity: 1; } 93%, 97% { opacity: 0; } }
+@keyframes pixel-cat-closed { 0%, 92%, 100% { opacity: 0; } 93%, 97% { opacity: 1; } }
+
+@media (max-width: 700px) {
+  .hero__pixel-cat { top: 10%; right: .4rem; width: 18vw; }
+}

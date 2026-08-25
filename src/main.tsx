@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState, type PointerEvent, type ReactNode, type UIEvent } from 'react'
 import { assets, projects, type Project } from './data/projects'
 import pixelCatAbout from './media/pixel-cat-about.png'
-import pixelCatContact from './media/pixel-cat-contact.png'
+import pixelCatContactClosed from './media/pixel-cat-contact-closed.png'
+import pixelCatContactOpen from './media/pixel-cat-contact-open.png'
 import pixelCatSkills from './media/pixel-cat-skills.png'
 import './styles.css'
 
@@ -52,7 +53,7 @@ function Hero() {
     hero.current.style.setProperty('--mark-y', `${y * 11}px`)
   }
   const resetHero = () => { if (hero.current) { hero.current.style.setProperty('--paper-x', '0px'); hero.current.style.setProperty('--paper-y', '0px'); hero.current.style.setProperty('--mark-x', '0px'); hero.current.style.setProperty('--mark-y', '0px') } }
-  return <section id="top" className="hero" ref={hero} onPointerMove={moveHero} onPointerLeave={resetHero}><p className="eyebrow hero__eyebrow">Graphic Designer <span>Tomsk / 2026</span></p><div className="hero__title" aria-label="Диана Вольф"><span>ДИАНА</span><span>ВОЛЬФ</span></div><div className="hero__paper">визуальный дизайн<br />и печатная магия</div><div className="hero__mark" aria-hidden="true"><span>01</span></div><p className="hero__description">Визуальный дизайн, айдентика<br />и многостраничная продукция.</p><a className="scroll-hint" href="#works">scroll to explore <Icon name="arrow-down" /></a></section>
+  return <section id="top" className="hero" ref={hero} onPointerMove={moveHero} onPointerLeave={resetHero}><p className="eyebrow hero__eyebrow">Graphic Designer <span>Tomsk / 2026</span></p><div className="hero__title" aria-label="Диана Вольф"><span>ДИАНА</span><span>ВОЛЬФ</span></div><div className="hero__paper">визуальный дизайн<br />и печатная магия</div><img className="hero__pixel-cat" src={pixelCatAbout} alt="" loading="eager" decoding="async" aria-hidden="true" /><div className="hero__mark" aria-hidden="true"><span>01</span></div><p className="hero__description">Визуальный дизайн, айдентика<br />и многостраничная продукция.</p><a className="scroll-hint" href="#works">scroll to explore <Icon name="arrow-down" /></a></section>
 }
 
 function ProjectIndex({ openProject }: { openProject: (project: Project) => void }) {
@@ -180,7 +181,7 @@ function Contact() {
     contact.current.style.setProperty('--pixel-cat-rotate', `${x * 2.4}deg`)
   }
   const resetCats = () => { if (contact.current) { contact.current.style.setProperty('--pixel-cat-x', '0px'); contact.current.style.setProperty('--pixel-cat-y', '0px'); contact.current.style.setProperty('--pixel-cat-rotate', '0deg') } }
-  return <section ref={contact} className="contact" id="contact" aria-labelledby="contact-title" onPointerMove={moveCats} onPointerLeave={resetCats}><img className="contact__pixel-cat" src={pixelCatContact} alt="" loading="lazy" decoding="async" aria-hidden="true" /><p className="eyebrow">Есть проект?</p><h2 id="contact-title">Давайте<br /><em>обсудим.</em></h2><p className="contact__sub">Вы можете написать мне в Telegram<br />или отправить письмо.</p><div className="contact__actions"><a className="magnetic" href="https://t.me/Vol_hsu" target="_blank" rel="noopener noreferrer">Написать мне <Icon name="arrow-up-right" /></a><a href="mailto:d1ana.volf@yandex.ru">d1ana.volf@yandex.ru</a></div><footer><span>DIANA VOLF<br />GRAPHIC DESIGNER</span><span>© 2026</span><a href="#top">Back to top <Icon name="arrow-up" /></a></footer></section> }
+  return <section ref={contact} className="contact" id="contact" aria-labelledby="contact-title" onPointerMove={moveCats} onPointerLeave={resetCats}><div className="contact__pixel-cat" aria-hidden="true"><img className="contact__pixel-cat-open" src={pixelCatContactOpen} alt="" loading="lazy" decoding="async" /><img className="contact__pixel-cat-closed" src={pixelCatContactClosed} alt="" loading="lazy" decoding="async" /><span>ваш<br />проект?</span></div><p className="eyebrow">Есть проект?</p><h2 id="contact-title">Давайте<br /><em>обсудим.</em></h2><p className="contact__sub">Вы можете написать мне в Telegram<br />или отправить письмо.</p><div className="contact__actions"><a className="magnetic" href="https://t.me/Vol_hsu" target="_blank" rel="noopener noreferrer">Написать мне <Icon name="arrow-up-right" /></a><a href="mailto:d1ana.volf@yandex.ru">d1ana.volf@yandex.ru</a></div><footer><span>DIANA VOLF<br />GRAPHIC DESIGNER</span><span>© 2026</span><a href="#top">Back to top <Icon name="arrow-up" /></a></footer></section> }
 
 type ZoomedImage = { src: string; alt: string }
 function CaseDialog({ project, close, next }: { project: Project; close: () => void; next: () => void }) {
