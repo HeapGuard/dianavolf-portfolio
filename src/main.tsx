@@ -178,11 +178,12 @@ function Contact() {
     const bounds = contact.current.getBoundingClientRect()
     const x = (event.clientX - bounds.left) / bounds.width - .5
     const y = (event.clientY - bounds.top) / bounds.height - .5
-    contact.current.style.setProperty('--pixel-cat-x', `${x * 38}px`)
-    contact.current.style.setProperty('--pixel-cat-y', `${y * 26}px`)
-    contact.current.style.setProperty('--pixel-cat-rotate', `${x * 2.4}deg`)
+    const cat = contact.current.querySelector<HTMLElement>('.contact__pixel-cat')
+    cat?.style.setProperty('--pixel-cat-x', `${x * 58}px`)
+    cat?.style.setProperty('--pixel-cat-y', `${y * 42}px`)
+    cat?.style.setProperty('--pixel-cat-rotate', `${x * 5}deg`)
   }
-  const resetCats = () => { if (contact.current) { contact.current.style.setProperty('--pixel-cat-x', '0px'); contact.current.style.setProperty('--pixel-cat-y', '0px'); contact.current.style.setProperty('--pixel-cat-rotate', '0deg') } }
+  const resetCats = () => { const cat = contact.current?.querySelector<HTMLElement>('.contact__pixel-cat'); cat?.style.setProperty('--pixel-cat-x', '0px'); cat?.style.setProperty('--pixel-cat-y', '0px'); cat?.style.setProperty('--pixel-cat-rotate', '0deg') }
   return <section ref={contact} className="contact" id="contact" aria-labelledby="contact-title" onPointerMove={moveCats} onPointerLeave={resetCats}><div className="contact__pixel-cat" aria-hidden="true"><img className="contact__pixel-cat-open" src={pixelCatContactOpen} alt="" loading="lazy" decoding="async" /><img className="contact__pixel-cat-closed" src={pixelCatContactClosed} alt="" loading="lazy" decoding="async" /></div><p className="eyebrow">Есть проект?</p><h2 id="contact-title">Давайте<br /><em>обсудим.</em></h2><p className="contact__sub">Вы можете написать мне в Telegram<br />или отправить письмо.</p><div className="contact__actions"><a className="magnetic" href="https://t.me/Vol_hsu" target="_blank" rel="noopener noreferrer">Написать мне <Icon name="arrow-up-right" /></a><a href="mailto:d1ana.volf@yandex.ru">d1ana.volf@yandex.ru</a></div><footer><span>DIANA VOLF<br />GRAPHIC DESIGNER</span><span>© 2026</span><a href="#top">Back to top <Icon name="arrow-up" /></a></footer></section> }
 
 type ZoomedImage = { src: string; alt: string }
