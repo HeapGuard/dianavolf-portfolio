@@ -47,8 +47,22 @@ function ProjectIndex({ openProject }: { openProject: (project: Project) => void
   return <section className="works" id="works" aria-labelledby="works-title"><div className="section-top"><p className="eyebrow">selected projects</p><h2 id="works-title">Избранные<br /><em>работы</em></h2><p>2025 — 2026</p></div><div className="project-index" onPointerMove={movePreview}>{projects.map((project) => <button key={project.id} className={`project-row project-row--${project.theme}`} onMouseEnter={() => setActive(project)} onFocus={() => setActive(project)} onMouseLeave={() => setActive(null)} onBlur={() => setActive(null)} onClick={() => openProject(project)}><span className="project-row__number">{project.number}</span><span className="project-row__title">{project.title}</span><span className="project-row__meta">{project.tags[0]} <Icon name="arrow-up-right" /></span></button>)}</div>{active && <div ref={preview} className="cursor-preview" aria-hidden="true"><img src={active.cover} alt="" decoding="async" /><span>Открыть кейс</span></div>}<p className="works__note">Наведите на название<br />или выберите работу</p></section>
 }
 
+function ProjectCard({ project, index, openProject }: { project: Project; index: number; openProject: (project: Project) => void }) {
+  const surface = useRef<HTMLButtonElement>(null)
+  const tilt = (event: PointerEvent<HTMLButtonElement>) => {
+    if (event.pointerType !== 'mouse' || !surface.current || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const bounds = event.currentTarget.getBoundingClientRect()
+    const x = (event.clientX - bounds.left) / bounds.width - .5
+    const y = (event.clientY - bounds.top) / bounds.height - .5
+    surface.current.style.setProperty('--tilt-x', `${y * -3}deg`)
+    surface.current.style.setProperty('--tilt-y', `${x * 3}deg`)
+  }
+  const resetTilt = () => { if (surface.current) { surface.current.style.setProperty('--tilt-x', '0deg'); surface.current.style.setProperty('--tilt-y', '0deg') } }
+  return <article className={`case-card case-card--${project.theme} ${index % 2 ? 'case-card--offset' : ''}`}><aside className="case-card__aside"><p>{project.number} / {project.year}</p><h3>{project.subtitle}</h3><p>{project.description}</p><span>{project.tags.join(' · ')}</span></aside><button ref={surface} onPointerMove={tilt} onPointerLeave={resetTilt} onBlur={resetTilt} onClick={() => openProject(project)} aria-label={`Открыть проект ${project.title}`}><img src={project.cover} alt={`Проект «${project.title}»`} loading="lazy" decoding="async" fetchPriority="low" /><span className="case-card__label"><i>{project.number}</i><b>{project.title}</b><em>Смотреть <Icon name="arrow-up-right" /></em></span></button></article>
+}
+
 function ProjectCases({ openProject }: { openProject: (project: Project) => void }) {
-  return <section className="case-gallery" aria-label="Превью проектов">{projects.map((project, index) => <article key={project.id} className={`case-card case-card--${project.theme} ${index % 2 ? 'case-card--offset' : ''}`}><aside className="case-card__aside"><p>{project.number} / {project.year}</p><h3>{project.subtitle}</h3><p>{project.description}</p><span>{project.tags.join(' · ')}</span></aside><button onClick={() => openProject(project)} aria-label={`Открыть проект ${project.title}`}><img src={project.cover} alt={`Проект «${project.title}»`} loading="lazy" decoding="async" fetchPriority="low" /><span className="case-card__label"><i>{project.number}</i><b>{project.title}</b><em>Смотреть <Icon name="arrow-up-right" /></em></span></button></article>)}</section>
+  return <section className="case-gallery" aria-label="Превью проектов">{projects.map((project, index) => <ProjectCard key={project.id} project={project} index={index} openProject={openProject} />)}</section>
 }
 
 function About() { return <><section className="about" id="about" aria-labelledby="about-title"><p className="about__ghost" aria-hidden="true">ОБО<br />МНЕ</p><img src={assets.about} alt="Диана Вольф" loading="lazy" decoding="async" fetchPriority="low" /><div className="about__copy"><p className="eyebrow">01 / about me</p><h2 id="about-title">Дизайн —<br />это <em>внимание</em><br />к деталям.</h2><p>Начинающий графический дизайнер из Томска. Создаю визуальные решения для печатной и рекламной продукции, айдентики и многостраничных изданий.</p></div></section><div className="ticker" aria-label="Направления работы"><div>ЛОГОТИПЫ <span>•</span> EDITORIAL <span>•</span> АФИШИ <span>•</span> BRANDING <span>•</span> PRINT <span>•</span> ЖУРНАЛЫ <span>•</span></div></div></> }
