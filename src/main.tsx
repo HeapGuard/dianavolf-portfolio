@@ -6,6 +6,7 @@ import pixelCatContactOpen from './media/pixel-cat-contact-open.png'
 import pixelCatHeroClosed from './media/pixel-cat-hero-closed.png'
 import pixelCatHeroOpen from './media/pixel-cat-hero-open.png'
 import pixelCatSkills from './media/pixel-cat-skills.png'
+import dianaPortraitStudio from './media/diana-portrait-studio.jpg'
 import voxelStudioRoom from './media/voxel-studio-room.png'
 import './styles.css'
 
@@ -135,7 +136,7 @@ function Studio() {
   }
   return <section ref={studio} className="studio" aria-labelledby="studio-title" onPointerMove={moveStudio} onPointerLeave={resetStudio}>
     <div className="studio__top"><p className="eyebrow">03 / after hours</p><div><h2 id="studio-title">Моя<br /><em>студия</em></h2><p>Тихий вечер, много растений, идеи на экране<br />и место для будущего портрета.</p></div></div>
-    <div className="studio__viewport"><div className="studio__window"><img src={voxelStudioRoom} alt="Пиксельная студия: дизайнер работает за компьютером среди растений, полок и кота" loading="lazy" decoding="async" fetchPriority="low" /><span className="studio__glass" aria-hidden="true" /><span className="studio__shine studio__shine--one" aria-hidden="true" /><span className="studio__shine studio__shine--two" aria-hidden="true" /><span className="studio__frame-note" aria-hidden="true">portrait<br />soon</span></div><p className="studio__caption">смотрим в окно / личная студия</p></div>
+    <div className="studio__viewport"><div className="studio__window"><img src={voxelStudioRoom} alt="Пиксельная студия: дизайнер работает за компьютером среди растений, полок и кота" loading="lazy" decoding="async" fetchPriority="low" /><span className="studio__glass" aria-hidden="true" /><img className="studio__portrait" src={dianaPortraitStudio} alt="Портрет Дианы Вольф в рамке на столе" loading="lazy" decoding="async" fetchPriority="low" /><span className="studio__shine studio__shine--one" aria-hidden="true" /><span className="studio__shine studio__shine--two" aria-hidden="true" /></div><p className="studio__caption">смотрим в окно / личная студия</p></div>
   </section>
 }
 
