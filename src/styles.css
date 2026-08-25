@@ -246,7 +246,7 @@ h1, h2, p { margin-top: 0; } em { font-style: normal; font-family: 'Nauryz', var
 .skills { position: relative; overflow: hidden; }
 .skills__pixel-cat { position: absolute; z-index: 0; right: max(-1.8rem, -3vw); bottom: clamp(2rem, 7vw, 7rem); width: min(16vw, 12rem); }
 .skills > :not(.skills__pixel-cat) { position: relative; z-index: 1; }
-.contact__pixel-cat { --pixel-cat-x: 0px; --pixel-cat-y: 0px; --pixel-cat-rotate: 0deg; position: absolute; z-index: 1; right: clamp(1rem, 7vw, 9rem); top: 50%; width: min(32vw, 30rem); transform: translate3d(var(--pixel-cat-x), calc(-50% + var(--pixel-cat-y)), 0) rotate(var(--pixel-cat-rotate)); transform-origin: 50% 80%; transition: transform .35s cubic-bezier(.16, 1, .3, 1); will-change: transform; }
+.contact__pixel-cat { --pixel-cat-x: 0px; --pixel-cat-y: 0px; --pixel-cat-rotate: 0deg; position: absolute; z-index: 1; right: clamp(1rem, 7vw, 9rem); top: 50%; width: min(22vw, 20rem); transform: translate3d(var(--pixel-cat-x), calc(-50% + var(--pixel-cat-y)), 0) rotate(var(--pixel-cat-rotate)); transform-origin: 50% 80%; transition: transform .35s cubic-bezier(.16, 1, .3, 1); will-change: transform; }
 
 @media (min-width: 701px) {
   .case-card > button { grid-column: 1 / span 7; }
@@ -259,16 +259,18 @@ h1, h2, p { margin-top: 0; } em { font-style: normal; font-family: 'Nauryz', var
   .about__pixel-cat, .skills__pixel-cat, .contact__pixel-cat { display: none; }
 }
 
-/* Pixel cat cameo in the opening scene and a two-frame blinking contact sticker. */
-.hero__pixel-cat { position: absolute; z-index: 2; top: 13%; right: clamp(.6rem, 4vw, 5rem); width: min(14vw, 9rem); image-rendering: pixelated; pointer-events: none; }
-.contact__pixel-cat { display: block; aspect-ratio: 3 / 2; image-rendering: auto; }
-.contact__pixel-cat img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; image-rendering: pixelated; pointer-events: none; }
-.contact__pixel-cat-open { z-index: 1; animation: pixel-cat-open 5.2s steps(1, end) infinite; }
-.contact__pixel-cat-closed { z-index: 1; animation: pixel-cat-closed 5.2s steps(1, end) infinite; }
-.contact__pixel-cat > span { position: absolute; z-index: 2; top: 72%; left: 43%; width: 42%; transform: translate(-50%, -50%); color: var(--blue); font: 700 clamp(.5rem, .8vw, .78rem)/1.15 var(--sans); letter-spacing: .05em; text-align: center; text-transform: uppercase; }
+/* Two-frame pixel cat stickers: the first image creates the intrinsic box, the second blinks above it. */
+.hero__pixel-cat { position: absolute; z-index: 2; top: -1.3rem; right: clamp(.8rem, 4vw, 5rem); width: min(16vw, 10.5rem); line-height: 0; image-rendering: pixelated; pointer-events: none; }
+.hero__pixel-cat img { display: block; width: 100%; height: auto; image-rendering: pixelated; }
+.hero__pixel-cat .hero__pixel-cat-closed { position: absolute; inset: 0; }
+.contact__pixel-cat { display: block; aspect-ratio: auto; image-rendering: auto; }
+.contact__pixel-cat img { display: block; width: 100%; height: auto; image-rendering: pixelated; pointer-events: none; }
+.contact__pixel-cat .contact__pixel-cat-closed { position: absolute; inset: 0; }
+.hero__pixel-cat-open, .contact__pixel-cat-open { z-index: 1; animation: pixel-cat-open 5.2s steps(1, end) infinite; }
+.hero__pixel-cat-closed, .contact__pixel-cat-closed { z-index: 2; animation: pixel-cat-closed 5.2s steps(1, end) infinite; }
 @keyframes pixel-cat-open { 0%, 92%, 100% { opacity: 1; } 93%, 97% { opacity: 0; } }
 @keyframes pixel-cat-closed { 0%, 92%, 100% { opacity: 0; } 93%, 97% { opacity: 1; } }
 
 @media (max-width: 700px) {
-  .hero__pixel-cat { top: 10%; right: .4rem; width: 18vw; }
+  .hero__pixel-cat { top: -.5rem; right: .35rem; width: 24vw; }
 }
