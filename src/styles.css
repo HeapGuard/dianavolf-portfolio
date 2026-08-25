@@ -260,7 +260,7 @@ h1, h2, p { margin-top: 0; } em { font-style: normal; font-family: 'Nauryz', var
 }
 
 /* Two-frame pixel cat stickers: the first image creates the intrinsic box, the second blinks above it. */
-.hero__pixel-cat { position: absolute; z-index: 4; top: 53%; right: clamp(.8rem, 4vw, 5rem); width: min(16vw, 10.5rem); line-height: 0; transform: translateY(-50%); image-rendering: pixelated; pointer-events: none; }
+.hero__pixel-cat { position: absolute; z-index: 4; top: -1.35rem; left: 50%; width: min(15vw, 10rem); line-height: 0; transform: translateX(-50%); image-rendering: pixelated; pointer-events: none; }
 .hero__pixel-cat img { display: block; width: 100%; height: auto; image-rendering: pixelated; }
 .hero__pixel-cat .hero__pixel-cat-closed { position: absolute; inset: 0; width: 100%; height: 100%; }
 .contact__pixel-cat { display: block; aspect-ratio: auto; image-rendering: auto; }
@@ -272,5 +272,6 @@ h1, h2, p { margin-top: 0; } em { font-style: normal; font-family: 'Nauryz', var
 @keyframes pixel-cat-closed { 0%, 92%, 100% { opacity: 0; } 93%, 97% { opacity: 1; } }
 
 @media (max-width: 700px) {
-  .hero__pixel-cat { top: 13%; right: .35rem; width: 22vw; }
+  .hero__pixel-cat { top: -.85rem; left: 50%; width: 23vw; }
+  .contact__pixel-cat { top: 61%; right: .55rem; width: min(25vw, 9rem); }
 }
