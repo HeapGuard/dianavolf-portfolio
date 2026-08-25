@@ -110,9 +110,12 @@ function ProjectCases({ openProject }: { openProject: (project: Project) => void
 }
 
 function Studio() {
+  const [isOpen, setIsOpen] = useState(false)
   const studio = useRef<HTMLElement>(null)
   const frame = useRef<number | null>(null)
   const pending = useRef({ x: 0, y: 0 })
+  const dragStart = useRef<number | null>(null)
+  const didDrag = useRef(false)
   const applyMovement = () => {
     frame.current = null
     if (!studio.current) return
@@ -134,9 +137,17 @@ function Studio() {
     studio.current.style.setProperty('--studio-y', '0px')
     studio.current.style.setProperty('--studio-tilt', '0deg')
   }
-  return <section ref={studio} className="studio" aria-labelledby="studio-title" onPointerMove={moveStudio} onPointerLeave={resetStudio}>
-    <div className="studio__top"><p className="eyebrow">03 / after hours</p><div><h2 id="studio-title">Моя<br /><em>студия</em></h2><p>Тихий вечер, много растений, идеи на экране<br />и место для будущего портрета.</p></div></div>
-    <div className="studio__viewport"><div className="studio__stage"><img className="studio__night-wall" src={studioNightWall} alt="" aria-hidden="true" loading="lazy" decoding="async" /><div className="studio__window"><img src={voxelStudioRoom} alt="Пиксельная студия: дизайнер работает за компьютером среди растений, полок и кота; в рамке на столе — портрет Дианы Вольф" loading="lazy" decoding="async" fetchPriority="low" /><span className="studio__glass" aria-hidden="true" /><span className="studio__shine studio__shine--one" aria-hidden="true" /><span className="studio__shine studio__shine--two" aria-hidden="true" /></div></div></div>
+  const startDrag = (event: PointerEvent<HTMLButtonElement>) => { dragStart.current = event.clientY; didDrag.current = false; event.currentTarget.setPointerCapture(event.pointerId) }
+  const trackDrag = (event: PointerEvent<HTMLButtonElement>) => { if (dragStart.current !== null && Math.abs(event.clientY - dragStart.current) > 12) didDrag.current = true }
+  const finishDrag = (event: PointerEvent<HTMLButtonElement>) => {
+    if (dragStart.current !== null && Math.abs(event.clientY - dragStart.current) > 24) setIsOpen(event.clientY < dragStart.current)
+    dragStart.current = null
+  }
+  const toggleStudio = () => { if (didDrag.current) { didDrag.current = false; return }; setIsOpen((open) => !open) }
+  return <section ref={studio} className={`studio ${isOpen ? 'studio--open' : ''}`} aria-labelledby="studio-title" onPointerMove={isOpen ? moveStudio : undefined} onPointerLeave={resetStudio}>
+    <button className="studio__handle" type="button" aria-expanded={isOpen} aria-controls="studio-panel" onPointerDown={startDrag} onPointerMove={trackDrag} onPointerUp={finishDrag} onClick={toggleStudio}><span>03 / моя студия</span><b>{isOpen ? 'Потяните вниз' : 'Потяните вверх'}</b><Icon name={isOpen ? 'arrow-down' : 'arrow-up'} /></button>
+    <div className="studio__drawer" id="studio-panel"><div className="studio__drawer-inner"><div className="studio__inner"><div className="studio__top"><p className="eyebrow">03 / after hours</p><div><h2 id="studio-title">Моя<br /><em>студия</em></h2><p>Тихий вечер, много растений, идеи на экране<br />и место для будущего портрета.</p></div></div>
+      <div className="studio__viewport"><div className="studio__stage"><img className="studio__night-wall" src={studioNightWall} alt="" aria-hidden="true" loading="lazy" decoding="async" /><div className="studio__window"><img src={voxelStudioRoom} alt="Пиксельная студия: дизайнер работает за компьютером среди растений, полок и кота; в рамке на столе — портрет Дианы Вольф" loading="lazy" decoding="async" fetchPriority="low" /><span className="studio__glass" aria-hidden="true" /><span className="studio__shine studio__shine--one" aria-hidden="true" /><span className="studio__shine studio__shine--two" aria-hidden="true" /></div></div></div></div></div></div>
   </section>
 }
 
@@ -243,5 +254,5 @@ function CaseDialog({ project, close, next }: { project: Project; close: () => v
   return <div ref={dialog} className={`dialog dialog--${project.theme}`} role="dialog" aria-modal="true" aria-labelledby="case-title" onScroll={moveDecor}><div className="dialog__ornaments" aria-hidden="true"><span>{project.number}</span><i /><b /></div><div className="dialog__bar"><span>DIANA VOLF / SELECTED WORK</span><button ref={closeButton} onClick={close} aria-label="Закрыть проект">Закрыть <Icon name="close" /></button></div><main className="case"><header><p className="eyebrow">{project.number} / {project.year}</p><h2 id="case-title">{project.title}</h2><p className="case__subtitle">{project.subtitle}</p><div className="tags">{project.tags.map(tag => <span key={tag}>{tag}</span>)}</div></header><div className="case__lead"><p>{project.description}</p><span>Scroll to explore <Icon name="arrow-down" /></span></div><div className="case__images">{project.images.map((image, index) => { const alt = `${project.title}: ${index === 0 ? 'обложка проекта' : 'детали работы'}`; return <figure key={image} className={index === 0 ? 'case__image case__image--hero' : 'case__image'}><button className="case__image-button" onClick={() => setZoomedImage({ src: image, alt })} aria-label={`Увеличить изображение: ${alt}`}><img src={image} alt={alt} /><span><Icon name="zoom" /> Увеличить</span></button></figure> })}</div><button className="next-project" onClick={next}>Следующий проект <Icon name="arrow-right" /></button></main>{zoomedImage && <div className="image-lightbox" role="dialog" aria-modal="true" aria-label="Увеличенное изображение" onClick={() => setZoomedImage(null)}><button className="image-lightbox__close" onClick={() => setZoomedImage(null)} aria-label="Закрыть увеличенное изображение"><Icon name="close" /></button><img src={zoomedImage.src} alt={zoomedImage.alt} onClick={(event) => event.stopPropagation()} /></div>}</div>
 }
 
-function App() { const [selected, setSelected] = useState<Project | null>(null); const nextProject = () => { if (selected) setSelected(projects[(projects.indexOf(selected) + 1) % projects.length]) }; return <><Header /><main><Hero /><ProjectIndex openProject={setSelected} /><ProjectCases openProject={setSelected} /><Studio /><About /><Skills /><Contact /></main>{selected && <CaseDialog project={selected} close={() => setSelected(null)} next={nextProject} />}</> }
+function App() { const [selected, setSelected] = useState<Project | null>(null); const nextProject = () => { if (selected) setSelected(projects[(projects.indexOf(selected) + 1) % projects.length]) }; return <><Header /><main><Hero /><ProjectIndex openProject={setSelected} /><ProjectCases openProject={setSelected} /><About /><Skills /><Studio /><Contact /></main>{selected && <CaseDialog project={selected} close={() => setSelected(null)} next={nextProject} />}</> }
 export default App

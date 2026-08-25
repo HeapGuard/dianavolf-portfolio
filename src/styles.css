@@ -274,9 +274,12 @@ h1, h2, p { margin-top: 0; } em { font-style: normal; font-family: 'Nauryz', var
   .contact__pixel-cat { top: 61%; right: .55rem; width: min(25vw, 9rem); }
 }
 
-/* A lightweight 2.5D voxel studio: one optimised scene, with a few compositor-only layers above it. */
-.studio { --studio-x: 0px; --studio-y: 0px; --studio-tilt: 0deg; position: relative; overflow: hidden; padding: clamp(5rem, 10vw, 10rem) clamp(1.1rem, 6vw, 7rem); background: var(--cream); color: var(--ink); }
+/* A lightweight 2.5D voxel studio, tucked behind a pull-tab between toolkit and contacts. */
+.studio { --studio-x: 0px; --studio-y: 0px; --studio-tilt: 0deg; position: relative; z-index: 1; overflow: hidden; background: var(--cream); color: var(--ink); }
 .studio::before { content: ''; position: absolute; inset: 0; opacity: .4; background-image: radial-gradient(#45518c2b .75px, transparent .85px); background-size: 12px 12px; pointer-events: none; }
+.studio__handle { position: relative; z-index: 3; display: flex; align-items: center; justify-content: center; gap: .8rem; width: min(100% - 2.2rem, 28rem); min-height: 3.75rem; margin: 0 auto; padding: .75rem 1.15rem; border: 0; border-radius: 0 0 1.15rem 1.15rem; background: var(--ink); color: var(--paper); box-shadow: 0 .8rem 1.8rem #14265330; cursor: grab; font: 700 .6rem var(--sans); letter-spacing: .1em; text-transform: uppercase; touch-action: none; transition: width .35s ease, background .25s ease, transform .25s ease; }
+.studio__handle:active { cursor: grabbing; transform: translateY(.12rem); }.studio__handle:hover { width: min(100% - 2.2rem, 31rem); background: #142653; }.studio__handle b { color: #a9b5e3; font: inherit; font-weight: 400; }.studio__handle .icon { width: 1rem; height: 1rem; }
+.studio__drawer { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .75s cubic-bezier(.16, 1, .3, 1); }.studio--open .studio__drawer { grid-template-rows: 1fr; }.studio__drawer-inner { min-height: 0; overflow: hidden; }.studio__inner { position: relative; padding: clamp(5rem, 10vw, 10rem) clamp(1.1rem, 6vw, 7rem); }
 .studio__top, .studio__viewport { position: relative; z-index: 1; width: min(100%, 92rem); margin-inline: auto; }
 .studio__top { display: grid; grid-template-columns: minmax(8rem, .45fr) 1fr; gap: 2rem; align-items: start; }
 .studio__top h2 { margin: 0; font: clamp(4rem, 9vw, 9rem)/.72 var(--serif); letter-spacing: -.08em; }
@@ -292,4 +295,4 @@ h1, h2, p { margin-top: 0; } em { font-style: normal; font-family: 'Nauryz', var
 .studio__shine--one { top: 20%; left: 21%; }.studio__shine--two { right: 16%; bottom: 25%; animation-delay: -1.5s; }
 @keyframes studio-glow { from { opacity: .16; transform: scale(.75); } to { opacity: .52; transform: scale(1.15); } }
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) { .studio__window { will-change: transform; } .studio:hover .studio__window { box-shadow: 0 2rem 4.5rem #000b, 0 0 0 1px #7192d747; } }
-@media (max-width: 700px) { .studio { padding-block: 4.5rem; }.studio__top { display: block; }.studio__top .eyebrow { margin-bottom: 2rem; }.studio__top > div > p { margin-top: 1.4rem; }.studio__viewport { margin-top: 2.8rem; }.studio__stage { min-height: 0; padding: .7rem; border-radius: 1.15rem; }.studio__window { width: 100%; border-width: .45rem; border-radius: .9rem; transform: none; }.studio__window > img { transform: none; }.studio__glass { display: none; }.studio__shine { display: none; } }
+@media (max-width: 700px) { .studio__handle { width: min(100% - 1.2rem, 25rem); min-height: 3.5rem; gap: .55rem; font-size: .53rem; }.studio__handle b { display: none; }.studio__inner { padding-block: 4.5rem; }.studio__top { display: block; }.studio__top .eyebrow { margin-bottom: 2rem; }.studio__top > div > p { margin-top: 1.4rem; }.studio__viewport { margin-top: 2.8rem; }.studio__stage { min-height: 0; padding: .7rem; border-radius: 1.15rem; }.studio__window { width: 100%; border-width: .45rem; border-radius: .9rem; transform: none; }.studio__window > img { transform: none; }.studio__glass { display: none; }.studio__shine { display: none; } }
