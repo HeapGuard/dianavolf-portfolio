@@ -203,3 +203,30 @@ h1, h2, p { margin-top: 0; } em { font-style: normal; font-family: 'Nauryz', var
   .about-lightbox__sheet { max-width: calc(100vw - 2rem); }
   .about-lightbox__sheet img { max-height: 78svh; }
 }
+
+/* Desktop depth responds to the pointer, then eases back to the surface. */
+@media (min-width: 701px) {
+  .case-card { --card-lift: 0px; --shadow-strength: .15; --shadow-scale: .96; }
+  .case-card::after { align-self: stretch; margin: 2% 3% 0; opacity: var(--shadow-strength); filter: blur(34px); transform: translate3d(var(--shadow-x), var(--shadow-y), 0) scale(var(--shadow-scale)); }
+  .case-card:has(> button:hover), .case-card:has(> button:focus-visible) { --card-lift: -12px; --shadow-strength: .38; --shadow-scale: 1.01; }
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .case-card > button { transform: translate3d(0, var(--card-lift, 0px), 0) perspective(1200px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y)); }
+  .case-card > button:hover { box-shadow: 0 1.15rem 2.8rem #1c2d5d1a; }
+}
+
+/* The case viewer keeps its content quiet while editorial marks drift in the margins. */
+.dialog { isolation: isolate; }
+.dialog__bar, .case { position: relative; z-index: 1; }
+.dialog__ornaments { position: absolute; z-index: 0; inset: 0; overflow: hidden; pointer-events: none; opacity: .16; }
+.dialog__ornaments span { position: absolute; top: 7rem; right: -1.8rem; font: clamp(10rem, 22vw, 22rem)/.7 var(--serif); letter-spacing: -.1em; transform: translate3d(0, var(--case-decor-y, 0px), 0); transition: transform .12s linear; }
+.dialog__ornaments i, .dialog__ornaments b { position: absolute; display: block; border: 1px solid currentColor; border-radius: 50%; }
+.dialog__ornaments i { top: 42rem; left: -10rem; width: 22rem; aspect-ratio: 1; transform: translate3d(0, var(--case-decor-y-reverse, 0px), 0); transition: transform .12s linear; }
+.dialog__ornaments b { right: 5%; top: 72rem; width: 5rem; aspect-ratio: 1; border-style: dashed; transform: translate3d(0, var(--case-decor-y, 0px), 0) rotate(18deg); transition: transform .12s linear; }
+
+@media (max-width: 700px) {
+  .dialog__ornaments { opacity: .1; }
+  .dialog__ornaments span { right: -2rem; }
+  .dialog__ornaments i { left: -14rem; }
+}

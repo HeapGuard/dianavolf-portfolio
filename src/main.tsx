@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type PointerEvent, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type PointerEvent, type ReactNode, type UIEvent } from 'react'
 import { assets, projects, type Project } from './data/projects'
 import './styles.css'
 
@@ -55,8 +55,18 @@ function Hero() {
 function ProjectIndex({ openProject }: { openProject: (project: Project) => void }) {
   const [active, setActive] = useState<Project | null>(null)
   const preview = useRef<HTMLDivElement>(null)
-  const movePreview = (event: PointerEvent<HTMLDivElement>) => { if (preview.current) preview.current.style.transform = `translate3d(${event.clientX + 22}px, ${event.clientY - 150}px, 0)` }
-  return <section className="works" id="works" aria-labelledby="works-title"><div className="section-top"><p className="eyebrow">selected projects</p><h2 id="works-title">Избранные<br /><em>работы</em></h2><p>2025 — 2026</p></div><div className="project-index" onPointerMove={movePreview}>{projects.map((project) => <button key={project.id} className={`project-row project-row--${project.theme}`} onMouseEnter={() => setActive(project)} onFocus={() => setActive(project)} onMouseLeave={() => setActive(null)} onBlur={() => setActive(null)} onClick={() => openProject(project)}><span className="project-row__number">{project.number}</span><span className="project-row__title">{project.title}</span><span className="project-row__meta">{project.tags[0]} <Icon name="arrow-up-right" /></span></button>)}</div>{active && <div ref={preview} className="cursor-preview" aria-hidden="true"><img src={active.cover} alt="" decoding="async" /><span>Открыть кейс</span></div>}<p className="works__note">Наведите на название<br />или выберите работу</p></section>
+  const previewPosition = useRef({ x: 0, y: 0 })
+  const positionPreview = (x: number, y: number) => {
+    previewPosition.current = { x, y }
+    if (preview.current) preview.current.style.transform = `translate3d(${x + 22}px, ${y - 150}px, 0)`
+  }
+  const showPreview = (event: PointerEvent<HTMLButtonElement>, project: Project) => {
+    if (event.pointerType !== 'mouse') return
+    positionPreview(event.clientX, event.clientY)
+    setActive(project)
+  }
+  const movePreview = (event: PointerEvent<HTMLDivElement>) => { if (event.pointerType === 'mouse') positionPreview(event.clientX, event.clientY) }
+  return <section className="works" id="works" aria-labelledby="works-title"><div className="section-top"><p className="eyebrow">selected projects</p><h2 id="works-title">Избранные<br /><em>работы</em></h2><p>2025 — 2026</p></div><div className="project-index" onPointerMove={movePreview}>{projects.map((project) => <button key={project.id} className={`project-row project-row--${project.theme}`} onPointerEnter={(event) => showPreview(event, project)} onFocus={() => setActive(project)} onPointerLeave={() => setActive(null)} onBlur={() => setActive(null)} onClick={() => openProject(project)}><span className="project-row__number">{project.number}</span><span className="project-row__title">{project.title}</span><span className="project-row__meta">{project.tags[0]} <Icon name="arrow-up-right" /></span></button>)}</div>{active && <div ref={preview} className="cursor-preview" style={{ transform: `translate3d(${previewPosition.current.x + 22}px, ${previewPosition.current.y - 150}px, 0)` }} aria-hidden="true"><img src={active.cover} alt="" decoding="async" /><span>Открыть кейс</span></div>}<p className="works__note">Наведите на название<br />или выберите работу</p></section>
 }
 
 function ProjectCard({ project, index, openProject }: { project: Project; index: number; openProject: (project: Project) => void }) {
@@ -154,11 +164,18 @@ function Contact() { return <section className="contact" id="contact" aria-label
 type ZoomedImage = { src: string; alt: string }
 function CaseDialog({ project, close, next }: { project: Project; close: () => void; next: () => void }) {
   const closeButton = useRef<HTMLButtonElement>(null)
+  const dialog = useRef<HTMLDivElement>(null)
   const [zoomedImage, setZoomedImage] = useState<ZoomedImage | null>(null)
   useScrollLock(true)
   useEffect(() => { closeButton.current?.focus() }, [])
   useEffect(() => { const handler = (event: KeyboardEvent) => { if (event.key !== 'Escape') return; if (zoomedImage) setZoomedImage(null); else close() }; window.addEventListener('keydown', handler); return () => window.removeEventListener('keydown', handler) }, [close, zoomedImage])
-  return <div className={`dialog dialog--${project.theme}`} role="dialog" aria-modal="true" aria-labelledby="case-title"><div className="dialog__bar"><span>DIANA VOLF / SELECTED WORK</span><button ref={closeButton} onClick={close} aria-label="Закрыть проект">Закрыть <Icon name="close" /></button></div><main className="case"><header><p className="eyebrow">{project.number} / {project.year}</p><h2 id="case-title">{project.title}</h2><p className="case__subtitle">{project.subtitle}</p><div className="tags">{project.tags.map(tag => <span key={tag}>{tag}</span>)}</div></header><div className="case__lead"><p>{project.description}</p><span>Scroll to explore <Icon name="arrow-down" /></span></div><div className="case__images">{project.images.map((image, index) => { const alt = `${project.title}: ${index === 0 ? 'обложка проекта' : 'детали работы'}`; return <figure key={image} className={index === 0 ? 'case__image case__image--hero' : 'case__image'}><button className="case__image-button" onClick={() => setZoomedImage({ src: image, alt })} aria-label={`Увеличить изображение: ${alt}`}><img src={image} alt={alt} /><span><Icon name="zoom" /> Увеличить</span></button></figure> })}</div><button className="next-project" onClick={next}>Следующий проект <Icon name="arrow-right" /></button></main>{zoomedImage && <div className="image-lightbox" role="dialog" aria-modal="true" aria-label="Увеличенное изображение" onClick={() => setZoomedImage(null)}><button className="image-lightbox__close" onClick={() => setZoomedImage(null)} aria-label="Закрыть увеличенное изображение"><Icon name="close" /></button><img src={zoomedImage.src} alt={zoomedImage.alt} onClick={(event) => event.stopPropagation()} /></div>}</div>
+  useEffect(() => { setZoomedImage(null); dialog.current?.scrollTo({ top: 0, behavior: 'smooth' }) }, [project.id])
+  const moveDecor = (event: UIEvent<HTMLDivElement>) => {
+    const offset = event.currentTarget.scrollTop
+    event.currentTarget.style.setProperty('--case-decor-y', `${offset * -.08}px`)
+    event.currentTarget.style.setProperty('--case-decor-y-reverse', `${offset * .05}px`)
+  }
+  return <div ref={dialog} className={`dialog dialog--${project.theme}`} role="dialog" aria-modal="true" aria-labelledby="case-title" onScroll={moveDecor}><div className="dialog__ornaments" aria-hidden="true"><span>{project.number}</span><i /><b /></div><div className="dialog__bar"><span>DIANA VOLF / SELECTED WORK</span><button ref={closeButton} onClick={close} aria-label="Закрыть проект">Закрыть <Icon name="close" /></button></div><main className="case"><header><p className="eyebrow">{project.number} / {project.year}</p><h2 id="case-title">{project.title}</h2><p className="case__subtitle">{project.subtitle}</p><div className="tags">{project.tags.map(tag => <span key={tag}>{tag}</span>)}</div></header><div className="case__lead"><p>{project.description}</p><span>Scroll to explore <Icon name="arrow-down" /></span></div><div className="case__images">{project.images.map((image, index) => { const alt = `${project.title}: ${index === 0 ? 'обложка проекта' : 'детали работы'}`; return <figure key={image} className={index === 0 ? 'case__image case__image--hero' : 'case__image'}><button className="case__image-button" onClick={() => setZoomedImage({ src: image, alt })} aria-label={`Увеличить изображение: ${alt}`}><img src={image} alt={alt} /><span><Icon name="zoom" /> Увеличить</span></button></figure> })}</div><button className="next-project" onClick={next}>Следующий проект <Icon name="arrow-right" /></button></main>{zoomedImage && <div className="image-lightbox" role="dialog" aria-modal="true" aria-label="Увеличенное изображение" onClick={() => setZoomedImage(null)}><button className="image-lightbox__close" onClick={() => setZoomedImage(null)} aria-label="Закрыть увеличенное изображение"><Icon name="close" /></button><img src={zoomedImage.src} alt={zoomedImage.alt} onClick={(event) => event.stopPropagation()} /></div>}</div>
 }
 
 function App() { const [selected, setSelected] = useState<Project | null>(null); const nextProject = () => { if (selected) setSelected(projects[(projects.indexOf(selected) + 1) % projects.length]) }; return <><Header /><main><Hero /><ProjectIndex openProject={setSelected} /><ProjectCases openProject={setSelected} /><About /><Skills /><Contact /></main>{selected && <CaseDialog project={selected} close={() => setSelected(null)} next={nextProject} />}</> }
