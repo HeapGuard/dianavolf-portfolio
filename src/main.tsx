@@ -79,7 +79,75 @@ function ProjectCases({ openProject }: { openProject: (project: Project) => void
   return <section className="case-gallery" aria-label="Превью проектов">{projects.map((project, index) => <ProjectCard key={project.id} project={project} index={index} openProject={openProject} />)}</section>
 }
 
-function About() { return <><section className="about" id="about" aria-labelledby="about-title"><p className="about__ghost" aria-hidden="true">ОБО<br />МНЕ</p><img src={assets.about} alt="Диана Вольф" loading="lazy" decoding="async" fetchPriority="low" /><div className="about__copy"><p className="eyebrow">01 / about me</p><h2 id="about-title">Дизайн —<br />это <em>внимание</em><br />к деталям.</h2><p>Начинающий графический дизайнер из Томска. Создаю визуальные решения для печатной и рекламной продукции, айдентики и многостраничных изданий.</p></div></section><div className="ticker" aria-label="Направления работы"><div>ЛОГОТИПЫ <span>•</span> EDITORIAL <span>•</span> АФИШИ <span>•</span> BRANDING <span>•</span> PRINT <span>•</span> ЖУРНАЛЫ <span>•</span></div></div></> }
+function About() {
+  const [portfolioOpen, setPortfolioOpen] = useState(false)
+  const [portfolioClosing, setPortfolioClosing] = useState(false)
+  const portfolio = useRef<HTMLButtonElement>(null)
+  useScrollLock(portfolioOpen)
+
+  useEffect(() => {
+    if (!portfolioOpen) return
+    const closeOnEscape = (event: KeyboardEvent) => { if (event.key === 'Escape') closePortfolio() }
+    window.addEventListener('keydown', closeOnEscape)
+    return () => window.removeEventListener('keydown', closeOnEscape)
+  }, [portfolioOpen, portfolioClosing])
+
+  const openPortfolio = () => {
+    setPortfolioClosing(false)
+    setPortfolioOpen(true)
+  }
+
+  const closePortfolio = () => {
+    if (portfolioClosing) return
+    setPortfolioClosing(true)
+    window.setTimeout(() => {
+      setPortfolioOpen(false)
+      setPortfolioClosing(false)
+    }, 360)
+  }
+
+  const tiltPortfolio = (event: PointerEvent<HTMLButtonElement>) => {
+    if (event.pointerType !== 'mouse' || !portfolio.current || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const bounds = event.currentTarget.getBoundingClientRect()
+    const x = (event.clientX - bounds.left) / bounds.width - .5
+    const y = (event.clientY - bounds.top) / bounds.height - .5
+    portfolio.current.style.setProperty('--about-tilt-x', `${y * -4}deg`)
+    portfolio.current.style.setProperty('--about-tilt-y', `${x * 5}deg`)
+    portfolio.current.style.setProperty('--about-shadow-x', `${x * -20}px`)
+  }
+
+  const resetPortfolio = () => {
+    if (!portfolio.current) return
+    portfolio.current.style.setProperty('--about-tilt-x', '0deg')
+    portfolio.current.style.setProperty('--about-tilt-y', '0deg')
+    portfolio.current.style.setProperty('--about-shadow-x', '0px')
+  }
+
+  return <>
+    <section className="about" id="about" aria-labelledby="about-title">
+      <p className="about__ghost" aria-hidden="true">ОБО<br />МНЕ</p>
+      <div className="about__layout">
+        <button ref={portfolio} className="about__portfolio" onPointerMove={tiltPortfolio} onPointerLeave={resetPortfolio} onBlur={resetPortfolio} onClick={openPortfolio} aria-label="Открыть портфолио Дианы Вольф на весь экран">
+          <img src={assets.about} alt="Портфолио Дианы Вольф" loading="lazy" decoding="async" fetchPriority="low" />
+          <span><Icon name="zoom" /> Открыть портфолио</span>
+        </button>
+        <div className="about__copy">
+          <p className="eyebrow">01 / about me</p>
+          <h2 id="about-title"><span>Дизайн —</span><span>это <em>внимание</em></span><span>к деталям.</span></h2>
+          <p>Начинающий графический дизайнер из Томска. Создаю визуальные решения для печатной и рекламной продукции, айдентики и многостраничных изданий.</p>
+        </div>
+      </div>
+    </section>
+    <div className="ticker" aria-label="Направления работы"><div>ЛОГОТИПЫ <span>•</span> EDITORIAL <span>•</span> АФИШИ <span>•</span> BRANDING <span>•</span> PRINT <span>•</span> ЖУРНАЛЫ <span>•</span></div></div>
+    {portfolioOpen && <div className={`image-lightbox about-lightbox ${portfolioClosing ? 'about-lightbox--closing' : ''}`} role="dialog" aria-modal="true" aria-label="Портфолио Дианы Вольф" onClick={closePortfolio}>
+      <button className="image-lightbox__close" onClick={(event) => { event.stopPropagation(); closePortfolio() }} aria-label="Закрыть портфолио"><Icon name="close" /></button>
+      <div className="about-lightbox__sheet" onClick={(event) => { event.stopPropagation(); closePortfolio() }}>
+        <img src={assets.about} alt="Портфолио Дианы Вольф" />
+        <p>Нажмите на портфолио, чтобы закрыть</p>
+      </div>
+    </div>}
+  </>
+}
 function Skills() { return <section className="skills" id="skills" aria-labelledby="skills-title"><div><p className="eyebrow">02 / toolkit</p><h2 id="skills-title">Работаю<br />в <em>системе</em></h2></div><ul className="skills__list"><li><i>PS</i>Adobe Photoshop</li><li><i>AI</i>Adobe Illustrator</li><li><i>ID</i>Adobe InDesign</li></ul><div className="qualities"><span>внимание к деталям</span><span>самоорганизация</span><span>ответственность</span><span>дисциплина</span><span>работа с ТЗ</span></div></section> }
 function Contact() { return <section className="contact" id="contact" aria-labelledby="contact-title"><p className="eyebrow">Есть проект?</p><h2 id="contact-title">Давайте<br /><em>обсудим.</em></h2><p className="contact__sub">Вы можете написать мне в Telegram<br />или отправить письмо.</p><div className="contact__actions"><a className="magnetic" href="https://t.me/Vol_hsu" target="_blank" rel="noopener noreferrer">Написать мне <Icon name="arrow-up-right" /></a><a href="mailto:d1ana.volf@yandex.ru">d1ana.volf@yandex.ru</a></div><footer><span>DIANA VOLF<br />GRAPHIC DESIGNER</span><span>© 2026</span><a href="#top">Back to top <Icon name="arrow-up" /></a></footer></section> }
 

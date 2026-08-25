@@ -164,3 +164,42 @@ h1, h2, p { margin-top: 0; } em { font-style: normal; font-family: 'Nauryz', var
   .case-card > button:hover img { transform: scale(1.035); }
   .case-card > button:hover .case-card__label, .case-card > button:focus-visible .case-card__label { opacity: 1; }
 }
+
+/* The about portrait and copy share one centred composition instead of spanning the whole section. */
+.about { display: block; }
+.about__layout { position: relative; z-index: 1; width: min(100%, 76rem); margin: 0 auto; display: grid; grid-template-columns: minmax(17rem, .9fr) minmax(22rem, 1fr); align-items: center; gap: clamp(3rem, 8vw, 9rem); }
+.about__portfolio { --about-tilt-x: 0deg; --about-tilt-y: 0deg; --about-shadow-x: 0px; position: relative; z-index: 1; display: block; width: 100%; padding: 0; border: 0; border-radius: 50% 50% 1rem 1rem; background: transparent; color: var(--paper); cursor: zoom-in; }
+.about__portfolio::before { content: ''; position: absolute; z-index: -1; inset: 10% 6% 2%; border-radius: 50% 50% 1rem 1rem; background: #080d20; opacity: .4; filter: blur(24px); transform: translate3d(var(--about-shadow-x), 1.35rem, 0) scale(.94); transition: transform .32s cubic-bezier(.16, 1, .3, 1), opacity .32s ease; }
+.about__portfolio img { display: block; width: 100%; margin: 0; border-radius: inherit; }
+.about__portfolio > span { position: absolute; right: .85rem; bottom: .85rem; display: inline-flex; align-items: center; gap: .4rem; padding: .6rem .75rem; border-radius: 99px; background: var(--paper); color: var(--ink); font-size: .56rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; opacity: 0; transform: translateY(.35rem); transition: opacity .25s ease, transform .25s ease; }
+.about__portfolio > span .icon { width: .95rem; height: .95rem; }
+.about__portfolio:hover > span, .about__portfolio:focus-visible > span { opacity: 1; transform: none; }
+.about__copy { transform: none; }
+.about h2 { display: flex; flex-direction: column; gap: clamp(.55rem, 1.45vw, 1.15rem); line-height: .76; }
+.about h2 > span { display: block; white-space: nowrap; }
+.about h2 > span:nth-child(2) { margin-top: clamp(.2rem, .55vw, .45rem); }
+.about-lightbox { z-index: 70; background: radial-gradient(circle at 50% 35%, #344982, #090d1d 72%); cursor: default; animation: artwork-backdrop-in .35s both ease-out; }
+.about-lightbox__sheet { display: grid; place-items: center; gap: .8rem; max-width: min(84vw, 52rem); cursor: zoom-out; animation: artwork-sheet-in .5s both cubic-bezier(.16, 1, .3, 1); }
+.about-lightbox__sheet img { max-width: 100%; max-height: 82svh; border-radius: .2rem; cursor: zoom-out; box-shadow: 0 1.5rem 5rem #0009; }
+.about-lightbox__sheet p { margin: 0; color: var(--paper); font-size: .58rem; font-weight: 700; letter-spacing: .09em; text-align: center; text-transform: uppercase; }
+.about-lightbox--closing { pointer-events: none; animation: artwork-backdrop-out .36s both ease-in; }
+.about-lightbox--closing .about-lightbox__sheet { animation: artwork-sheet-out .36s both cubic-bezier(.7, 0, .84, 0); }
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .about__portfolio { transform: perspective(1200px) rotateX(var(--about-tilt-x)) rotateY(var(--about-tilt-y)); transform-style: preserve-3d; transition: transform .32s cubic-bezier(.16, 1, .3, 1); will-change: transform; }
+  .about__portfolio:hover::before { opacity: .56; }
+}
+
+@keyframes artwork-backdrop-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes artwork-sheet-in { from { opacity: 0; transform: translateY(2rem) scale(.94) rotate(-1.5deg); } to { opacity: 1; transform: none; } }
+@keyframes artwork-backdrop-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes artwork-sheet-out { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(1.4rem) scale(.94) rotate(1deg); } }
+
+@media (max-width: 700px) {
+  .about__layout { grid-template-columns: 1fr; gap: 2.5rem; width: min(100%, 31rem); }
+  .about__portfolio { width: min(100%, 28rem); justify-self: center; }
+  .about__portfolio > span { opacity: 1; transform: none; }
+  .about__copy { transform: none; }
+  .about-lightbox__sheet { max-width: calc(100vw - 2rem); }
+  .about-lightbox__sheet img { max-height: 78svh; }
+}
