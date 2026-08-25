@@ -99,7 +99,7 @@ h1, h2, p { margin-top: 0; } em { font-style: normal; font-family: 'Nauryz', var
 /* Desktop editorial annotations fill the alternating gallery margins. */
 @media (min-width: 701px) {
   .case-gallery { display: flex; flex-direction: column; gap: clamp(2.5rem, 6vw, 8rem); }
-  .case-card, .case-card--offset { width: 100%; display: grid; grid-template-columns: repeat(12, 1fr); column-gap: 1.5rem; overflow: visible; border-radius: 0; content-visibility: visible; contain-intrinsic-size: auto; }
+  .case-card, .case-card--offset { width: 100%; display: grid; grid-template-columns: repeat(12, 1fr); column-gap: 1.5rem; overflow: visible; border-radius: 0; content-visibility: auto; contain-intrinsic-size: auto 36rem; }
   .case-card > button { grid-column: 1 / span 8; grid-row: 1; overflow: hidden; border-radius: 1.4rem; }
   .case-card--offset > button { grid-column: 5 / span 8; grid-row: 1; }
   .case-card__aside { grid-column: 10 / -1; grid-row: 1; align-self: stretch; display: flex; flex-direction: column; justify-content: center; color: var(--ink); }
@@ -121,7 +121,8 @@ h1, h2, p { margin-top: 0; } em { font-style: normal; font-family: 'Nauryz', var
 
 /* Optional 3D depth: interaction-only, no continuous animation. */
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  .case-card > button { transform: perspective(1200px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y)); transform-style: preserve-3d; will-change: transform; transition: transform .32s cubic-bezier(.16, 1, .3, 1), box-shadow .32s ease; }
+  .case-card > button { transform: perspective(1200px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y)); transform-style: preserve-3d; transition: transform .32s cubic-bezier(.16, 1, .3, 1), box-shadow .32s ease; }
+  .case-card > button:hover, .case-card > button:focus-visible { will-change: transform; }
   .case-card > button:hover { box-shadow: 0 1.6rem 3.6rem #1c2d5d28; }
   .case-card__label { transform: translateZ(24px); }
 }
@@ -147,7 +148,6 @@ h1, h2, p { margin-top: 0; } em { font-style: normal; font-family: 'Nauryz', var
   .case-card::after { content: ''; grid-column: 1 / span 8; grid-row: 1; z-index: 0; align-self: center; margin: 9% 7% 3%; border-radius: 1.4rem; background: #111318; opacity: .22; filter: blur(28px); transform: translate3d(var(--shadow-x), var(--shadow-y), 0) scale(.94); transition: transform .32s cubic-bezier(.16, 1, .3, 1), opacity .32s ease; pointer-events: none; }
   .case-card--offset::after { grid-column: 5 / span 8; }
   .case-card > button, .case-card__aside { position: relative; z-index: 1; }
-  .case-card:has(> button:hover)::after { opacity: .31; }
   .case-card__aside { position: relative; padding: 1.15rem 0 1.15rem 1rem; border-left: 1px solid #45518c45; transition: transform .3s cubic-bezier(.16, 1, .3, 1), border-color .3s ease; }
   .case-card__aside::before { content: ''; position: absolute; top: 1.15rem; left: -2px; width: 3px; height: 0; border-radius: 99px; background: var(--blue); transition: height .35s cubic-bezier(.16, 1, .3, 1); }
   .case-card__aside h3 { transition: color .25s ease, letter-spacing .25s ease; }
@@ -207,9 +207,7 @@ h1, h2, p { margin-top: 0; } em { font-style: normal; font-family: 'Nauryz', var
 /* Desktop depth responds to the pointer, then eases back to the surface. */
 @media (min-width: 701px) {
   .case-card { --shadow-strength: .18; --shadow-scale: .98; }
-  .case-card::after { align-self: stretch; margin: 3% 3% 1%; opacity: var(--shadow-strength); filter: blur(32px); transform: translate3d(var(--shadow-x), var(--shadow-y), 0) scale(var(--shadow-scale)); }
-  .case-card:has(> button:hover), .case-card:has(> button:focus-visible) { --shadow-strength: .3; --shadow-scale: 1; }
-  .case-card:has(> button:hover)::after, .case-card:has(> button:focus-visible)::after { opacity: var(--shadow-strength); }
+  .case-card::after { align-self: stretch; margin: 3% 3% 1%; opacity: var(--shadow-strength); background: radial-gradient(ellipse at center, #11131899 0 42%, #1113184d 58%, transparent 74%); filter: none; transform: translate3d(var(--shadow-x), var(--shadow-y), 0) scale(var(--shadow-scale)); }
   .case-card--offset .case-card__aside { grid-column: 1 / 4; padding: 1.15rem 1rem 1.15rem 0; }
   .case-card__aside::before { top: 0; height: 100%; transform: scaleY(0); transform-origin: top; transition: transform .35s cubic-bezier(.16, 1, .3, 1); }
   .case-card__aside:hover::before { height: 100%; transform: scaleY(1); }

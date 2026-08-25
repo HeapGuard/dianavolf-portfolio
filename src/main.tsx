@@ -82,17 +82,24 @@ function ProjectIndex({ openProject }: { openProject: (project: Project) => void
 
 function ProjectCard({ project, index, openProject }: { project: Project; index: number; openProject: (project: Project) => void }) {
   const surface = useRef<HTMLElement>(null)
+  const tiltFrame = useRef<number | null>(null)
+  const pendingTilt = useRef({ x: 0, y: 0 })
+  const applyTilt = () => {
+    tiltFrame.current = null
+    if (!surface.current) return
+    const { x, y } = pendingTilt.current
+    surface.current.style.setProperty('--tilt-x', `${y * -3}deg`)
+    surface.current.style.setProperty('--tilt-y', `${x * 3}deg`)
+    surface.current.style.setProperty('--shadow-x', `${x * -18}px`)
+    surface.current.style.setProperty('--shadow-y', `${12 + y * -8}px`)
+  }
   const tilt = (event: PointerEvent<HTMLButtonElement>) => {
     if (event.pointerType !== 'mouse' || !surface.current || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
     const bounds = event.currentTarget.getBoundingClientRect()
-    const x = (event.clientX - bounds.left) / bounds.width - .5
-    const y = (event.clientY - bounds.top) / bounds.height - .5
-    surface.current.style.setProperty('--tilt-x', `${y * -3}deg`)
-    surface.current.style.setProperty('--tilt-y', `${x * 3}deg`)
-    surface.current.style.setProperty('--shadow-x', `${x * -22}px`)
-    surface.current.style.setProperty('--shadow-y', `${14 + y * -10}px`)
+    pendingTilt.current = { x: (event.clientX - bounds.left) / bounds.width - .5, y: (event.clientY - bounds.top) / bounds.height - .5 }
+    if (tiltFrame.current === null) tiltFrame.current = requestAnimationFrame(applyTilt)
   }
-  const resetTilt = () => { if (surface.current) { surface.current.style.setProperty('--tilt-x', '0deg'); surface.current.style.setProperty('--tilt-y', '0deg'); surface.current.style.setProperty('--shadow-x', '0px'); surface.current.style.setProperty('--shadow-y', '14px') } }
+  const resetTilt = () => { if (tiltFrame.current !== null) { cancelAnimationFrame(tiltFrame.current); tiltFrame.current = null }; if (surface.current) { surface.current.style.setProperty('--tilt-x', '0deg'); surface.current.style.setProperty('--tilt-y', '0deg'); surface.current.style.setProperty('--shadow-x', '0px'); surface.current.style.setProperty('--shadow-y', '12px') } }
   return <article ref={surface} className={`case-card case-card--${project.theme} ${index % 2 ? 'case-card--offset' : ''}`}><aside className="case-card__aside"><p>{project.number} / {project.year}</p><h3>{project.subtitle}</h3><p>{project.description}</p><span>{project.tags.join(' · ')}</span></aside><button onPointerMove={tilt} onPointerLeave={resetTilt} onBlur={resetTilt} onClick={() => openProject(project)} aria-label={`Открыть проект ${project.title}`}><img src={project.cover} alt={`Проект «${project.title}»`} loading="lazy" decoding="async" fetchPriority="low" /><span className="case-card__label"><i>{project.number}</i><b>{project.title}</b><em>Смотреть <Icon name="arrow-up-right" /></em></span></button></article>
 }
 
