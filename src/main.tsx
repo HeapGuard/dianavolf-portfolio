@@ -37,7 +37,19 @@ function Header() {
 }
 
 function Hero() {
-  return <section id="top" className="hero"><p className="eyebrow hero__eyebrow">Graphic Designer <span>Tomsk / 2026</span></p><div className="hero__title" aria-label="Диана Вольф"><span>ДИАНА</span><span>ВОЛЬФ</span></div><div className="hero__paper">визуальный дизайн<br />и печатная магия</div><div className="hero__mark" aria-hidden="true"><span>01</span></div><p className="hero__description">Визуальный дизайн, айдентика<br />и многостраничная продукция.</p><a className="scroll-hint" href="#works">scroll to explore <Icon name="arrow-down" /></a></section>
+  const hero = useRef<HTMLElement>(null)
+  const moveHero = (event: PointerEvent<HTMLElement>) => {
+    if (event.pointerType !== 'mouse' || !hero.current || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const bounds = hero.current.getBoundingClientRect()
+    const x = (event.clientX - bounds.left) / bounds.width - .5
+    const y = (event.clientY - bounds.top) / bounds.height - .5
+    hero.current.style.setProperty('--paper-x', `${x * -20}px`)
+    hero.current.style.setProperty('--paper-y', `${y * -14}px`)
+    hero.current.style.setProperty('--mark-x', `${x * 15}px`)
+    hero.current.style.setProperty('--mark-y', `${y * 11}px`)
+  }
+  const resetHero = () => { if (hero.current) { hero.current.style.setProperty('--paper-x', '0px'); hero.current.style.setProperty('--paper-y', '0px'); hero.current.style.setProperty('--mark-x', '0px'); hero.current.style.setProperty('--mark-y', '0px') } }
+  return <section id="top" className="hero" ref={hero} onPointerMove={moveHero} onPointerLeave={resetHero}><p className="eyebrow hero__eyebrow">Graphic Designer <span>Tomsk / 2026</span></p><div className="hero__title" aria-label="Диана Вольф"><span>ДИАНА</span><span>ВОЛЬФ</span></div><div className="hero__paper">визуальный дизайн<br />и печатная магия</div><div className="hero__mark" aria-hidden="true"><span>01</span></div><p className="hero__description">Визуальный дизайн, айдентика<br />и многостраничная продукция.</p><a className="scroll-hint" href="#works">scroll to explore <Icon name="arrow-down" /></a></section>
 }
 
 function ProjectIndex({ openProject }: { openProject: (project: Project) => void }) {
