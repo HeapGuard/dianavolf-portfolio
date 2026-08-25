@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type MouseEvent, type PointerEvent, type ReactNode, type UIEvent } from 'react'
+import { useEffect, useRef, useState, type PointerEvent, type ReactNode, type UIEvent } from 'react'
 import { assets, projects, type Project } from './data/projects'
 import pixelCatAbout from './media/pixel-cat-about.png'
 import pixelCatContactClosed from './media/pixel-cat-contact-closed.png'
@@ -113,12 +113,9 @@ function ProjectCases({ openProject }: { openProject: (project: Project) => void
 
 function Studio() {
   const [isOpen, setIsOpen] = useState(false)
-  const [pullDirection, setPullDirection] = useState<'up' | 'down' | null>(null)
   const studio = useRef<HTMLElement>(null)
   const frame = useRef<number | null>(null)
   const pending = useRef({ x: 0, y: 0 })
-  const dragStart = useRef<number | null>(null)
-  const didDrag = useRef(false)
   const applyMovement = () => {
     frame.current = null
     if (!studio.current) return
@@ -140,41 +137,8 @@ function Studio() {
     studio.current.style.setProperty('--studio-y', '0px')
     studio.current.style.setProperty('--studio-tilt', '0deg')
   }
-  const releasePull = () => {
-    studio.current?.style.setProperty('--studio-pull', '0px')
-    setPullDirection(null)
-  }
-  const startDrag = (event: PointerEvent<HTMLButtonElement>) => {
-    dragStart.current = event.clientY
-    didDrag.current = false
-    event.currentTarget.setPointerCapture(event.pointerId)
-  }
-  const trackDrag = (event: PointerEvent<HTMLButtonElement>) => {
-    if (dragStart.current === null) return
-    const delta = event.clientY - dragStart.current
-    const distance = Math.min(Math.abs(delta), 126)
-    if (distance > 8) {
-      didDrag.current = true
-      setPullDirection(delta < 0 ? 'up' : 'down')
-      studio.current?.style.setProperty('--studio-pull', `${distance}px`)
-    }
-  }
-  const finishDrag = (event: PointerEvent<HTMLButtonElement>) => {
-    if (dragStart.current !== null) {
-      const delta = event.clientY - dragStart.current
-      if (delta <= -48) setIsOpen(true)
-      if (delta >= 48) setIsOpen(false)
-    }
-    dragStart.current = null
-    window.requestAnimationFrame(releasePull)
-  }
-  const cancelDrag = () => { dragStart.current = null; releasePull() }
-  const toggleWithKeyboard = (event: MouseEvent<HTMLButtonElement>) => {
-    if (didDrag.current) { didDrag.current = false; return }
-    setIsOpen((open) => !open)
-  }
-  return <section ref={studio} className={`studio ${isOpen ? 'studio--open' : ''} ${pullDirection ? `studio--pulling-${pullDirection}` : ''}`} aria-labelledby="studio-title" onPointerMove={isOpen ? moveStudio : undefined} onPointerLeave={resetStudio}>
-    <button className="studio__handle" type="button" aria-expanded={isOpen} aria-controls="studio-panel" onPointerDown={startDrag} onPointerMove={trackDrag} onPointerUp={finishDrag} onPointerCancel={cancelDrag} onClick={toggleWithKeyboard}><span>03 / моя студия</span><b>{isOpen ? 'Потяните вниз' : 'Потяните вверх'}</b><Icon name={isOpen ? 'arrow-down' : 'arrow-up'} /></button>
+  return <section ref={studio} className={`studio ${isOpen ? 'studio--open' : ''}`} aria-labelledby="studio-title" onPointerMove={isOpen ? moveStudio : undefined} onPointerLeave={resetStudio}>
+    <button className="studio__handle" type="button" aria-expanded={isOpen} aria-controls="studio-panel" onClick={() => setIsOpen((open) => !open)}><span>03 / моя студия</span><b>{isOpen ? 'Скрыть' : 'Открыть'}</b><Icon name={isOpen ? 'arrow-down' : 'arrow-up'} /></button>
     <div className="studio__drawer" id="studio-panel"><div className="studio__drawer-inner"><div className="studio__inner"><div className="studio__top"><p className="eyebrow">03 / after hours</p><div><h2 id="studio-title">Моя<br /><em>студия</em></h2><p>Тихий вечер, много растений, идеи на экране<br />и место для будущего портрета.</p></div></div>
       <div className="studio__viewport"><div className="studio__stage"><img className="studio__night-wall" src={studioNightWall} alt="" aria-hidden="true" loading="lazy" decoding="async" /><div className="studio__window"><img src={voxelStudioRoom} alt="Пиксельная студия: дизайнер работает за компьютером среди растений, полок и кота; в рамке на столе — портрет Дианы Вольф" loading="lazy" decoding="async" fetchPriority="low" /><span className="studio__glass" aria-hidden="true" /><span className="studio__shine studio__shine--one" aria-hidden="true" /><span className="studio__shine studio__shine--two" aria-hidden="true" /></div></div></div></div></div></div>
   </section>
