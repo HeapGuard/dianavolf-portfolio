@@ -95,3 +95,10 @@ h1, h2, p { margin-top: 0; } em { font-style: normal; font-family: 'Nauryz', var
   .hero__mark { display: none; }
   .hero__description { bottom: 1.4rem; }
 }
+
+/* Optional mobile scroll guidance. Proximity never blocks a deliberate free scroll. */
+@media (max-width: 700px) and (prefers-reduced-motion: no-preference) {
+  html { scroll-snap-type: y proximity; }
+  .works, .case-card, .about, .skills, .contact { scroll-snap-align: start; scroll-snap-stop: normal; }
+  .case-card { scroll-margin-top: 4.8rem; }
+}
