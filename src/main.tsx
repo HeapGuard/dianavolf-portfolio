@@ -171,7 +171,7 @@ function Studio() {
   const cancelDrag = () => { dragStart.current = null; releasePull() }
   const toggleWithKeyboard = (event: MouseEvent<HTMLButtonElement>) => {
     if (didDrag.current) { didDrag.current = false; return }
-    if (event.detail === 0) setIsOpen((open) => !open)
+    setIsOpen((open) => !open)
   }
   return <section ref={studio} className={`studio ${isOpen ? 'studio--open' : ''} ${pullDirection ? `studio--pulling-${pullDirection}` : ''}`} aria-labelledby="studio-title" onPointerMove={isOpen ? moveStudio : undefined} onPointerLeave={resetStudio}>
     <button className="studio__handle" type="button" aria-expanded={isOpen} aria-controls="studio-panel" onPointerDown={startDrag} onPointerMove={trackDrag} onPointerUp={finishDrag} onPointerCancel={cancelDrag} onClick={toggleWithKeyboard}><span>03 / моя студия</span><b>{isOpen ? 'Потяните вниз' : 'Потяните вверх'}</b><Icon name={isOpen ? 'arrow-down' : 'arrow-up'} /></button>
