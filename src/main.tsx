@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState, type PointerEvent, type ReactNode, type UIEvent } from 'react'
 import { assets, projects, type Project } from './data/projects'
-import contactCats from './media/contact-cats.png'
+import catDream from './media/cat-dream.png'
+import catEnvelope from './media/cat-envelope.png'
+import catNote from './media/cat-note.png'
 import './styles.css'
 
 type IconName = 'arrow-down' | 'arrow-up' | 'arrow-right' | 'arrow-up-right' | 'close' | 'menu' | 'zoom'
@@ -57,6 +59,11 @@ function ProjectIndex({ openProject }: { openProject: (project: Project) => void
   const [active, setActive] = useState<Project | null>(null)
   const preview = useRef<HTMLDivElement>(null)
   const previewPosition = useRef({ x: 0, y: 0 })
+  useEffect(() => {
+    const hidePreview = () => setActive(null)
+    window.addEventListener('scroll', hidePreview, { passive: true })
+    return () => window.removeEventListener('scroll', hidePreview)
+  }, [])
   const positionPreview = (x: number, y: number) => {
     previewPosition.current = { x, y }
     if (preview.current) preview.current.style.transform = `translate3d(${x + 22}px, ${y - 150}px, 0)`
@@ -159,7 +166,7 @@ function About() {
     </div>}
   </>
 }
-function Skills() { return <section className="skills" id="skills" aria-labelledby="skills-title"><div className="skills__decor" aria-hidden="true"><span>03</span><i /><b /></div><div><p className="eyebrow">02 / toolkit</p><h2 id="skills-title">Работаю<br />в <em>системе</em></h2></div><ul className="skills__list"><li><i>PS</i>Adobe Photoshop</li><li><i>AI</i>Adobe Illustrator</li><li><i>ID</i>Adobe InDesign</li></ul><div className="qualities"><span>внимание к деталям</span><span>самоорганизация</span><span>ответственность</span><span>дисциплина</span><span>работа с ТЗ</span></div></section> }
+function Skills() { return <section className="skills" id="skills" aria-labelledby="skills-title"><div><p className="eyebrow">02 / toolkit</p><h2 id="skills-title">Работаю<br />в <em>системе</em></h2></div><ul className="skills__list"><li><i>PS</i>Adobe Photoshop</li><li><i>AI</i>Adobe Illustrator</li><li><i>ID</i>Adobe InDesign</li></ul><div className="qualities"><span>внимание к деталям</span><span>самоорганизация</span><span>ответственность</span><span>дисциплина</span><span>работа с ТЗ</span></div></section> }
 function Contact() {
   const contact = useRef<HTMLElement>(null)
   const moveCats = (event: PointerEvent<HTMLElement>) => {
@@ -167,12 +174,18 @@ function Contact() {
     const bounds = contact.current.getBoundingClientRect()
     const x = (event.clientX - bounds.left) / bounds.width - .5
     const y = (event.clientY - bounds.top) / bounds.height - .5
-    contact.current.style.setProperty('--cats-x', `${x * 26}px`)
-    contact.current.style.setProperty('--cats-y', `${y * 18}px`)
-    contact.current.style.setProperty('--cats-rotate', `${x * 2.2}deg`)
+    contact.current.style.setProperty('--cat-one-x', `${x * 34}px`)
+    contact.current.style.setProperty('--cat-one-y', `${y * 22}px`)
+    contact.current.style.setProperty('--cat-one-rotate', `${x * 3}deg`)
+    contact.current.style.setProperty('--cat-two-x', `${x * -25}px`)
+    contact.current.style.setProperty('--cat-two-y', `${y * 14}px`)
+    contact.current.style.setProperty('--cat-two-rotate', `${x * -2.2}deg`)
+    contact.current.style.setProperty('--cat-three-x', `${x * 42}px`)
+    contact.current.style.setProperty('--cat-three-y', `${y * -19}px`)
+    contact.current.style.setProperty('--cat-three-rotate', `${x * 2.7}deg`)
   }
-  const resetCats = () => { if (contact.current) { contact.current.style.setProperty('--cats-x', '0px'); contact.current.style.setProperty('--cats-y', '0px'); contact.current.style.setProperty('--cats-rotate', '0deg') } }
-  return <section ref={contact} className="contact" id="contact" aria-labelledby="contact-title" onPointerMove={moveCats} onPointerLeave={resetCats}><div className="contact__cats" aria-hidden="true"><img src={contactCats} alt="" loading="lazy" decoding="async" /></div><p className="eyebrow">Есть проект?</p><h2 id="contact-title">Давайте<br /><em>обсудим.</em></h2><p className="contact__sub">Вы можете написать мне в Telegram<br />или отправить письмо.</p><div className="contact__actions"><a className="magnetic" href="https://t.me/Vol_hsu" target="_blank" rel="noopener noreferrer">Написать мне <Icon name="arrow-up-right" /></a><a href="mailto:d1ana.volf@yandex.ru">d1ana.volf@yandex.ru</a></div><footer><span>DIANA VOLF<br />GRAPHIC DESIGNER</span><span>© 2026</span><a href="#top">Back to top <Icon name="arrow-up" /></a></footer></section> }
+  const resetCats = () => { if (contact.current) { ['one', 'two', 'three'].forEach((cat) => { contact.current?.style.setProperty(`--cat-${cat}-x`, '0px'); contact.current?.style.setProperty(`--cat-${cat}-y`, '0px'); contact.current?.style.setProperty(`--cat-${cat}-rotate`, '0deg') }) } }
+  return <section ref={contact} className="contact" id="contact" aria-labelledby="contact-title" onPointerMove={moveCats} onPointerLeave={resetCats}><div className="contact__cats" aria-hidden="true"><img className="contact__cat contact__cat--envelope" src={catEnvelope} alt="" loading="lazy" decoding="async" /><img className="contact__cat contact__cat--dream" src={catDream} alt="" loading="lazy" decoding="async" /><img className="contact__cat contact__cat--note" src={catNote} alt="" loading="lazy" decoding="async" /></div><p className="eyebrow">Есть проект?</p><h2 id="contact-title">Давайте<br /><em>обсудим.</em></h2><p className="contact__sub">Вы можете написать мне в Telegram<br />или отправить письмо.</p><div className="contact__actions"><a className="magnetic" href="https://t.me/Vol_hsu" target="_blank" rel="noopener noreferrer">Написать мне <Icon name="arrow-up-right" /></a><a href="mailto:d1ana.volf@yandex.ru">d1ana.volf@yandex.ru</a></div><footer><span>DIANA VOLF<br />GRAPHIC DESIGNER</span><span>© 2026</span><a href="#top">Back to top <Icon name="arrow-up" /></a></footer></section> }
 
 type ZoomedImage = { src: string; alt: string }
 function CaseDialog({ project, close, next }: { project: Project; close: () => void; next: () => void }) {
