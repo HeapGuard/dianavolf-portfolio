@@ -296,3 +296,13 @@ h1, h2, p { margin-top: 0; } em { font-style: normal; font-family: 'Nauryz', var
 @keyframes studio-glow { from { opacity: .16; transform: scale(.75); } to { opacity: .52; transform: scale(1.15); } }
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) { .studio__window { will-change: transform; } .studio:hover .studio__window { box-shadow: 0 2rem 4.5rem #000b, 0 0 0 1px #7192d747; } }
 @media (max-width: 700px) { .studio__handle { width: min(100% - 1.2rem, 25rem); min-height: 3.5rem; gap: .55rem; font-size: .53rem; }.studio__handle b { display: none; }.studio__inner { padding-block: 4.5rem; }.studio__top { display: block; }.studio__top .eyebrow { margin-bottom: 2rem; }.studio__top > div > p { margin-top: 1.4rem; }.studio__viewport { margin-top: 2.8rem; }.studio__stage { min-height: 0; padding: .7rem; border-radius: 1.15rem; }.studio__window { width: 100%; border-width: .45rem; border-radius: .9rem; transform: none; }.studio__window > img { transform: none; }.studio__glass { display: none; }.studio__shine { display: none; } }
+
+.contact__portfolio { display: inline-flex; align-items: center; gap: .45rem; }.contact__portfolio .icon, .contact__behance .icon { width: 1.05rem; height: 1.05rem; }
+.contact__behance { justify-self: center; }.contact__back { justify-self: end; }
+@media (max-width: 700px) {
+  .contact footer { grid-template-columns: 1fr auto auto; }
+  .contact footer > span:first-child { grid-column: 1 / -1; }
+  .contact footer > span:nth-child(2) { grid-column: 1; }
+  .contact footer .contact__behance { display: inline-flex; grid-column: 2; grid-row: 2; justify-self: center; }
+  .contact footer .contact__back { display: inline-flex; grid-column: 3; grid-row: 2; justify-self: end; }
+}
